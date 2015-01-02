@@ -1,0 +1,19 @@
+before_commands:
+    - "composer install --no-interaction"
+
+tools:
+    php_sim: false
+    php_changetracking: true
+    php_cpd: true
+    php_mess_detector: true
+    php_code_sniffer: true
+    php_analyzer: true
+    sensiolabs_security_checker: true
+    php_code_coverage: true
+    php_pdepend:
+        excluded_dirs: [vendor, doc]
+    external_code_coverage:
+        timeout: 3600
+        runs: 1
+filter:
+    excluded_paths: [vendor/*, doc/*]
