@@ -4,11 +4,11 @@ namespace AESKW;
 
 class A192KW extends AESKW
 {
-    protected function checkKeySize($kek)
+    protected function checkKEKSize($kek)
     {
-        parent::checkKeySize($kek);
+        parent::checkKEKSize($kek);
         if (strlen($kek) !== 24) {
-            throw new \InvalidArgumentException("Bad key size");
+            throw new \InvalidArgumentException("Bad KEK size");
         }
     }
 }

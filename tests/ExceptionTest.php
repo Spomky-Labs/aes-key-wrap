@@ -12,7 +12,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException        InvalidArgumentException
-     * @expectedExceptionMessage Bad key size
+     * @expectedExceptionMessage Bad KEK size
      */
     public function testAESKWBadKeySize()
     {
@@ -26,7 +26,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException        InvalidArgumentException
-     * @expectedExceptionMessage Bad key size
+     * @expectedExceptionMessage Bad KEK size
      */
     public function testA128KWBadKeySize()
     {
@@ -40,7 +40,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException        InvalidArgumentException
-     * @expectedExceptionMessage Bad key size
+     * @expectedExceptionMessage Bad KEK size
      */
     public function testA192KWBadKeySize()
     {
@@ -54,7 +54,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException        InvalidArgumentException
-     * @expectedExceptionMessage Bad key size
+     * @expectedExceptionMessage Bad KEK size
      */
     public function testA256KWBadKeySize()
     {
@@ -81,7 +81,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        InvalidArgumentException
+     * @expectedException        RuntimeException
      * @expectedExceptionMessage Bad data
      */
     public function testWrap64BitsKeyDataWith128BitKEK()
