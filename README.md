@@ -51,14 +51,20 @@ The preferred way to install this library is to rely on Composer:
 
 ## How to use ##
 
+This library provides three classes:
+
+* `AESKW\A128KW`: AES 128 key wrap
+* `AESKW\A192KW`: AES 192 key wrap
+* `AESKW\A256KW`: AES 256 key wrap
+
 ### Wrap a key using RFC3394 ###
 
 In the following example, we will wrap the key `key` using the KEK `kek` using `AES 128`:
 
-	// We use the AES 128 algorithm
-	use AESKW\A128KW;
+    // We use the AES 128 algorithm
+    use AESKW\A128KW;
 
-	// The Key Encryption Key
+    // The Key Encryption Key
     $kek  = hex2bin("000102030405060708090A0B0C0D0E0F");
 
     // The key we want to wrap
@@ -77,10 +83,10 @@ In the following example, we will wrap the key `key` using the KEK `kek` using `
 
 In the following example, we will wrap the key `key` using the KEK `kek` using `AES 128`. The main difference with the RFC3394 is that you can wrap a key of any practical size:
 
-	// We use the AES 128 algorithm
-	use AESKW\A128KW;
+    // We use the AES 128 algorithm
+    use AESKW\A128KW;
 
-	// The Key Encryption Key
+    // The Key Encryption Key
     $kek  = hex2bin("000102030405060708090A0B0C0D0E0F");
 
     // The key we want to wrap. Please note that the size is not exactly a 64 bits-block
