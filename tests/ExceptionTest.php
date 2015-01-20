@@ -14,7 +14,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
      * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage Bad KEK size
      */
-    public function testAESKWBadKeySize()
+    public function testAESKWBadKEKSize()
     {
         $kek  = hex2bin("00");
         $data = hex2bin("00112233445566778899AABBCCDDEEFF");
@@ -28,7 +28,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
      * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage Bad KEK size
      */
-    public function testA128KWBadKeySize()
+    public function testA128KWBadKEKSize()
     {
         $kek  = hex2bin("0001020304050607");
         $data = hex2bin("00112233445566778899AABBCCDDEEFF");
@@ -42,7 +42,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
      * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage Bad KEK size
      */
-    public function testA192KWBadKeySize()
+    public function testA192KWBadKEKSize()
     {
         $kek  = hex2bin("00010203040506070809101112131415");
         $data = hex2bin("00112233445566778899AABBCCDDEEFF");
@@ -56,7 +56,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
      * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage Bad KEK size
      */
-    public function testA256KWBadKeySize()
+    public function testA256KWBadKEKSize()
     {
         $kek  = hex2bin("00010203040506070809101112131415");
         $data = hex2bin("00112233445566778899AABBCCDDEEFF");
@@ -78,6 +78,48 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $wrapper = new A128KW();
 
         $wrapper->unwrap($kek, $data);
+    }
+
+    /**
+     * @expectedException        InvalidArgumentException
+     * @expectedExceptionMessage Bad key size
+     */
+    public function testA128KWBadKeySize()
+    {
+        $kek  = hex2bin("00010203040506070809101112131415");
+        $data = hex2bin("0011223344");
+
+        $wrapper = new A128KW();
+
+        $wrapper->wrap($kek, $data);
+    }
+
+    /**
+     * @expectedException        InvalidArgumentException
+     * @expectedExceptionMessage Bad key size
+     */
+    public function testA128KWEmptyKey()
+    {
+        $kek  = hex2bin("00010203040506070809101112131415");
+        $data = hex2bin("");
+
+        $wrapper = new A128KW();
+
+        $wrapper->wrap($kek, $data, true);
+    }
+
+    /**
+     * @expectedException        RuntimeException
+     * @expectedExceptionMessage Integrity check failed
+     */
+    public function testA128KWIntegrityNotVerified()
+    {
+        $kek  = hex2bin("5840df6e29b02af1ab493b705bf16ea1ae8338f4dcc176a8");
+        $data  = hex2bin("138bdeaa9b8fa7fc61f97742e72248ee5ae6ae5360d1ae6a5f54f373fa543b6b");
+
+        $wrapper = new A192KW();
+
+        $wrapper->unwrap($kek, $data, true);
     }
 
     /**
