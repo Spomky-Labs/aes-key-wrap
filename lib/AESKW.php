@@ -22,7 +22,6 @@ abstract class AESKW
         $iv = hex2bin("A65959A6").$this->toXBits(32, $MLI);
 
         $n = intval(ceil($MLI/8));
-        //$b = 8*$n - $MLI;
         $key = str_pad($key, 8*$n, "\0", STR_PAD_RIGHT);
 
         return $iv;
