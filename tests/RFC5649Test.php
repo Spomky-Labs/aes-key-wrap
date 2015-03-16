@@ -3,7 +3,8 @@
 use AESKW\A192KW;
 
 /**
- * These tests come from the RFCRFC5649Test
+ * These tests come from the RFCRFC5649Test.
+ *
  * @see https://tools.ietf.org/html/rfc5649#section-6
  */
 class RFC5649Test extends \PHPUnit_Framework_TestCase

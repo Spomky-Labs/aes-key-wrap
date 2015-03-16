@@ -5,7 +5,8 @@ use AESKW\A192KW;
 use AESKW\A256KW;
 
 /**
- * These tests come from the RFC3394
+ * These tests come from the RFC3394.
+ *
  * @see https://www.ietf.org/rfc/rfc3394.txt#4
  */
 class One64BitBlockTest extends \PHPUnit_Framework_TestCase

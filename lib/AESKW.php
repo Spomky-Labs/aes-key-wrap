@@ -7,9 +7,10 @@ abstract class AESKW
     /**
      * The initial value used to wrap the key and check the integrity when unwrapped.
      * The RFC3394 set this value to 0xA6A6A6A6A6A6A6A6
-     * The RFC5649 set this value to 0xA65959A6XXXXXXXX (The part with XXXXXXXX is the MLI, depends on the padding)
+     * The RFC5649 set this value to 0xA65959A6XXXXXXXX (The part with XXXXXXXX is the MLI, depends on the padding).
      *
      * @return string
+     *
      * @see https://tools.ietf.org/html/rfc3394#section-2.2.3.1
      */
     protected function getInitialValue(&$key, $padding_enabled)
@@ -65,7 +66,8 @@ abstract class AESKW
     }
 
     /**
-     * @param  string                    $kek The Key Encryption Key
+     * @param string $kek The Key Encryption Key
+     *
      * @throws \InvalidArgumentException If the size of the KEK is invalid
      */
     protected function checkKEKSize($kek)
@@ -76,7 +78,8 @@ abstract class AESKW
     }
 
     /**
-     * @param  string                    $key The Key to wrap
+     * @param string $key The Key to wrap
+     *
      * @throws \InvalidArgumentException If the size of the Key is invalid
      */
     protected function checkKeySize($key, $padding_enabled)
@@ -90,9 +93,10 @@ abstract class AESKW
     }
 
     /**
-     * @param  string            $kek             The Key Encryption Key
-     * @param  string            $key             The key to wrap
-     * @param  boolean           $padding_enabled If false, the key to wrap must be a sequence of one or more 64-bit blocks (RFC3394 compliant), else the key size must be at least one octet (RFC5649 compliant)
+     * @param string  $kek             The Key Encryption Key
+     * @param string  $key             The key to wrap
+     * @param boolean $padding_enabled If false, the key to wrap must be a sequence of one or more 64-bit blocks (RFC3394 compliant), else the key size must be at least one octet (RFC5649 compliant)
+     *
      * @throws \RuntimeException If the wrapped key is not valid
      */
     public function wrap($kek, $key, $padding_enabled = false)
@@ -124,10 +128,12 @@ abstract class AESKW
     }
 
     /**
-     * @param  string            $kek             The Key Encryption Key
-     * @param  string            $key             The key to unwrap
-     * @param  boolean           $padding_enabled If false, the AIV check must be RFC3394 compliant, else it must be RFC5649 or RFC3394 compliant
-     * @return string            The key unwrapped
+     * @param string  $kek             The Key Encryption Key
+     * @param string  $key             The key to unwrap
+     * @param boolean $padding_enabled If false, the AIV check must be RFC3394 compliant, else it must be RFC5649 or RFC3394 compliant
+     *
+     * @return string The key unwrapped
+     *
      * @throws \RuntimeException If the wrapped key is not valid
      */
     public function unwrap($kek, $key, $padding_enabled = false)
@@ -165,8 +171,9 @@ abstract class AESKW
     }
 
     /**
-     * @param  integer $bits
-     * @param  integer $value
+     * @param integer $bits
+     * @param integer $value
+     *
      * @return string
      */
     private function toXBits($bits, $value)
@@ -175,7 +182,8 @@ abstract class AESKW
     }
 
     /**
-     * @param  string $value
+     * @param string $value
+     *
      * @return string
      */
     private function getMSB($value)
@@ -184,7 +192,8 @@ abstract class AESKW
     }
 
     /**
-     * @param  string $value
+     * @param string $value
+     *
      * @return string
      */
     private function getLSB($value)

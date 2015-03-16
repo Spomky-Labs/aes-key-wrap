@@ -3,7 +3,8 @@
 use AESKW\A128KW;
 
 /**
- * This test comes from the JWE specification
+ * This test comes from the JWE specification.
+ *
  * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.3.3
  */
 class JWETest extends \PHPUnit_Framework_TestCase
