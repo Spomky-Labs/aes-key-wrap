@@ -20,9 +20,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("00");
         $data = hex2bin("00112233445566778899AABBCCDDEEFF");
 
-        $wrapper = new A128KW();
-
-        $wrapper->wrap($kek, $data);
+      A128KW::wrap($kek, $data);
     }
 
     /**
@@ -34,9 +32,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("0001020304050607");
         $data = hex2bin("00112233445566778899AABBCCDDEEFF");
 
-        $wrapper = new A128KW();
-
-        $wrapper->wrap($kek, $data);
+      A128KW::wrap($kek, $data);
     }
 
     /**
@@ -48,9 +44,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("00010203040506070809101112131415");
         $data = hex2bin("00112233445566778899AABBCCDDEEFF");
 
-        $wrapper = new A192KW();
-
-        $wrapper->wrap($kek, $data);
+        A192KW::wrap($kek, $data);
     }
 
     /**
@@ -62,9 +56,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("00010203040506070809101112131415");
         $data = hex2bin("00112233445566778899AABBCCDDEEFF");
 
-        $wrapper = new A256KW();
-
-        $wrapper->wrap($kek, $data);
+        A256KW::wrap($kek, $data);
     }
 
     /**
@@ -76,9 +68,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("000102030405060708090A0B0C0D0E0F");
         $data = hex2bin("1FA68B0A8112B447AEF34BD8FB5A7B829D3E862371D2CFE4");
 
-        $wrapper = new A128KW();
-
-        $wrapper->unwrap($kek, $data);
+        A128KW::unwrap($kek, $data);
     }
 
     /**
@@ -90,9 +80,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("00010203040506070809101112131415");
         $data = hex2bin("0011223344");
 
-        $wrapper = new A128KW();
-
-        $wrapper->wrap($kek, $data);
+      A128KW::wrap($kek, $data);
     }
 
     /**
@@ -104,9 +92,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("00010203040506070809101112131415");
         $data = hex2bin("");
 
-        $wrapper = new A128KW();
-
-        $wrapper->wrap($kek, $data, true);
+        A128KW::wrap($kek, $data, true);
     }
 
     /**
@@ -118,9 +104,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("5840df6e29b02af1ab493b705bf16ea1ae8338f4dcc176a8");
         $data  = hex2bin("138bdeaa9b8fa7fc61f97742e72248ee5ae6ae5360d1ae6a5f54f373fa543b6b");
 
-        $wrapper = new A192KW();
-
-        $wrapper->unwrap($kek, $data, true);
+        A192KW::unwrap($kek, $data, true);
     }
 
     /**
@@ -132,9 +116,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("000102030405060708090A0B0C0D0E0F");
         $data = hex2bin("F4740052E82A2251");
 
-        $wrapper = new A128KW();
-
-        $wrapper->unwrap($kek, $data);
+        A128KW::unwrap($kek, $data);
     }
 
     /**
@@ -146,8 +128,6 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $kek  = hex2bin("000102030405060708090A0B0C0D0E0F");
         $data = hex2bin("F4740052E82A225174CE86FBD7B805E6");
 
-        $wrapper = new A128KW();
-
-        $wrapper->unwrap($kek, $data);
+        A128KW::unwrap($kek, $data);
     }
 }

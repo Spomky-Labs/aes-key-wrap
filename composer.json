@@ -26,11 +26,11 @@
         "ext-mcrypt": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*"
+        "phpunit/phpunit": "~4.5"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     }
 }
