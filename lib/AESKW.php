@@ -2,7 +2,7 @@
 
 namespace AESKW;
 
-abstract class AESKW
+trait AESKW
 {
     /**
      * The initial value used to wrap the key and check the integrity when unwrapped.
@@ -13,14 +13,14 @@ abstract class AESKW
      *
      * @see https://tools.ietf.org/html/rfc3394#section-2.2.3.1
      */
-    protected function getInitialValue(&$key, $padding_enabled)
+    private static function getInitialValue(&$key, $padding_enabled)
     {
         if (false === $padding_enabled) {
             return hex2bin("A6A6A6A6A6A6A6A6");
         }
 
         $MLI = strlen($key);
-        $iv = hex2bin("A65959A6").$this->toXBits(32, $MLI);
+        $iv = hex2bin("A65959A6").self::toXBits(32, $MLI);
 
         $n = intval(ceil($MLI/8));
         $key = str_pad($key, 8*$n, "\0", STR_PAD_RIGHT);
@@ -30,7 +30,7 @@ abstract class AESKW
 
     /**
      */
-    protected function checkInitialValue(&$key, $padding_enabled, $iv)
+    private static function checkInitialValue(&$key, $padding_enabled, $iv)
     {
         // RFC3394 compliant
         if ($iv === hex2bin("A6A6A6A6A6A6A6A6")) {
@@ -43,12 +43,12 @@ abstract class AESKW
         }
 
         // The high-order half of the AIV according to the RFC5649
-        if (hex2bin("A65959A6") !== $this->getMSB($iv)) {
+        if (hex2bin("A65959A6") !== self::getMSB($iv)) {
             return false;
         }
 
         $n = strlen($key)/8;
-        $MLI = hexdec(bin2hex(ltrim($this->getLSB($iv), "\0")));
+        $MLI = hexdec(bin2hex(ltrim(self::getLSB($iv), "\0")));
 
         if (!(8*($n-1) < $MLI && $MLI <= 8*$n)) {
             return false;
@@ -66,23 +66,11 @@ abstract class AESKW
     }
 
     /**
-     * @param string $kek The Key Encryption Key
-     *
-     * @throws \InvalidArgumentException If the size of the KEK is invalid
-     */
-    protected function checkKEKSize($kek)
-    {
-        if (0 !== strlen($kek)% 8) {
-            throw new \InvalidArgumentException("Bad KEK size");
-        }
-    }
-
-    /**
      * @param string $key The Key to wrap
      *
      * @throws \InvalidArgumentException If the size of the Key is invalid
      */
-    protected function checkKeySize($key, $padding_enabled)
+    private static function checkKeySize($key, $padding_enabled)
     {
         if (false === $padding_enabled && 0 !== strlen($key)% 8) {
             throw new \InvalidArgumentException("Bad key size");
@@ -99,26 +87,26 @@ abstract class AESKW
      *
      * @throws \RuntimeException If the wrapped key is not valid
      */
-    public function wrap($kek, $key, $padding_enabled = false)
+    public static function wrap($kek, $key, $padding_enabled = false)
     {
-        $this->checkKEKSize($kek);
-        $A = $this->getInitialValue($key, $padding_enabled);
-        $this->checkKeySize($key, $padding_enabled);
+        self::checkKEKSize($kek);
+        $A = self::getInitialValue($key, $padding_enabled);
+        self::checkKeySize($key, $padding_enabled);
         $P = str_split($key, 8);
         $N = count($P);
         $C = array();
         if (1 === $N) {
             $B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$P[0], MCRYPT_MODE_ECB);
-            $C[0] = $this->getMSB($B);
-            $C[1] = $this->getLSB($B);
+            $C[0] = self::getMSB($B);
+            $C[1] = self::getLSB($B);
         } elseif (1 < $N) {
             $R = $P;
             for ($j = 0; $j <= 5; $j++) {
                 for ($i = 1; $i <= $N; $i++) {
                     $B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$R[$i-1], MCRYPT_MODE_ECB);
                     $t = $i + $j*$N;
-                    $A = $this->toXBits(64, $t) ^ $this->getMSB($B);
-                    $R[$i-1] = $this->getLSB($B);
+                    $A = self::toXBits(64, $t) ^ self::getMSB($B);
+                    $R[$i-1] = self::getLSB($B);
                 }
             }
             $C = array_merge(array($A), $R);
@@ -136,9 +124,9 @@ abstract class AESKW
      *
      * @throws \RuntimeException If the wrapped key is not valid
      */
-    public function unwrap($kek, $key, $padding_enabled = false)
+    public static function unwrap($kek, $key, $padding_enabled = false)
     {
-        $this->checkKEKSize($kek);
+        self::checkKEKSize($kek);
         $P = str_split($key, 8);
         $A = $P[0];
         $N = count($P);
@@ -147,23 +135,23 @@ abstract class AESKW
             throw new \RuntimeException("Bad data");
         } elseif (2 === $N) {
             $B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, $P[0].$P[1], MCRYPT_MODE_ECB);
-            $unwrapped = $this->getLSB($B);
-            $A = $this->getMSB($B);
+            $unwrapped = self::getLSB($B);
+            $A = self::getMSB($B);
         } else {
             $R = $P;
             for ($j = 5; $j >= 0; $j--) {
                 for ($i = $N-1; $i >= 1; $i--) {
                     $t = $i + $j*($N-1);
-                    $B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, ($this->toXBits(64, $t) ^ $A).$R[$i], MCRYPT_MODE_ECB);
-                    $A = $this->getMSB($B);
-                    $R[$i] = $this->getLSB($B);
+                    $B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, (self::toXBits(64, $t) ^ $A).$R[$i], MCRYPT_MODE_ECB);
+                    $A = self::getMSB($B);
+                    $R[$i] = self::getLSB($B);
                 }
             }
             unset($R[0]);
 
             $unwrapped = implode("", $R);
         }
-        if (!$this->checkInitialValue($unwrapped, $padding_enabled, $A)) {
+        if (!self::checkInitialValue($unwrapped, $padding_enabled, $A)) {
             throw new \RuntimeException("Integrity check failed");
         }
 
@@ -176,7 +164,7 @@ abstract class AESKW
      *
      * @return string
      */
-    private function toXBits($bits, $value)
+    private static function toXBits($bits, $value)
     {
         return hex2bin(str_pad(dechex($value), $bits/4, "0", STR_PAD_LEFT));
     }
@@ -186,7 +174,7 @@ abstract class AESKW
      *
      * @return string
      */
-    private function getMSB($value)
+    private static function getMSB($value)
     {
         return substr($value, 0, strlen($value)/2);
     }
@@ -196,7 +184,7 @@ abstract class AESKW
      *
      * @return string
      */
-    private function getLSB($value)
+    private static function getLSB($value)
     {
         return substr($value, strlen($value)/2);
     }

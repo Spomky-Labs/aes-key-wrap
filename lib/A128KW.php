@@ -2,11 +2,17 @@
 
 namespace AESKW;
 
-class A128KW extends AESKW
+class A128KW
 {
-    protected function checkKEKSize($kek)
+	use AESKW;
+	
+    /**
+     * @param string $kek The Key Encryption Key
+     *
+     * @throws \InvalidArgumentException If the size of the KEK is invalid
+     */
+    protected static function checkKEKSize($kek)
     {
-        parent::checkKEKSize($kek);
         if (strlen($kek) !== 16) {
             throw new \InvalidArgumentException("Bad KEK size");
         }

@@ -21,10 +21,9 @@ class JWETest extends \PHPUnit_Framework_TestCase
         }
         $data = hex2bin(implode("", $data));
 
-        $wrapper = new A128KW();
-        $wrapped = $wrapper->wrap($kek, $data);
+        $wrapped = A128KW::wrap($kek, $data);
         $this->assertEquals(base64_decode("6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ"), $wrapped);
-        $unwrapped = $wrapper->unwrap($kek, $wrapped);
+        $unwrapped = A128KW::unwrap($kek, $wrapped);
         $this->assertEquals($data, $unwrapped);
     }
 }
