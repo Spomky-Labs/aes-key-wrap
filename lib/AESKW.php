@@ -16,14 +16,14 @@ trait AESKW
     private static function getInitialValue(&$key, $padding_enabled)
     {
         if (false === $padding_enabled) {
-            return hex2bin("A6A6A6A6A6A6A6A6");
+            return hex2bin('A6A6A6A6A6A6A6A6');
         }
 
         $MLI = strlen($key);
-        $iv = hex2bin("A65959A6").self::toXBits(32, $MLI);
+        $iv = hex2bin('A65959A6').self::toXBits(32, $MLI);
 
-        $n = intval(ceil($MLI/8));
-        $key = str_pad($key, 8*$n, "\0", STR_PAD_RIGHT);
+        $n = intval(ceil($MLI / 8));
+        $key = str_pad($key, 8 * $n, "\0", STR_PAD_RIGHT);
 
         return $iv;
     }
@@ -33,7 +33,7 @@ trait AESKW
     private static function checkInitialValue(&$key, $padding_enabled, $iv)
     {
         // RFC3394 compliant
-        if ($iv === hex2bin("A6A6A6A6A6A6A6A6")) {
+        if ($iv === hex2bin('A6A6A6A6A6A6A6A6')) {
             return true;
         }
 
@@ -43,20 +43,20 @@ trait AESKW
         }
 
         // The high-order half of the AIV according to the RFC5649
-        if (hex2bin("A65959A6") !== self::getMSB($iv)) {
+        if (hex2bin('A65959A6') !== self::getMSB($iv)) {
             return false;
         }
 
-        $n = strlen($key)/8;
+        $n = strlen($key) / 8;
         $MLI = hexdec(bin2hex(ltrim(self::getLSB($iv), "\0")));
 
-        if (!(8*($n-1) < $MLI && $MLI <= 8*$n)) {
+        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
             return false;
         }
 
-        $b = 8*$n-$MLI;
-        for ($i = 0; $i < $b; $i++) {
-            if ("\0" !== substr($key, $MLI+$i, 1)) {
+        $b = 8 * $n - $MLI;
+        for ($i = 0; $i < $b; ++$i) {
+            if ("\0" !== substr($key, $MLI + $i, 1)) {
                 return false;
             }
         }
@@ -72,18 +72,18 @@ trait AESKW
      */
     private static function checkKeySize($key, $padding_enabled)
     {
-        if (false === $padding_enabled && 0 !== strlen($key)% 8) {
-            throw new \InvalidArgumentException("Bad key size");
+        if (false === $padding_enabled && 0 !== strlen($key) % 8) {
+            throw new \InvalidArgumentException('Bad key size');
         }
         if (1 > strlen($key)) {
-            throw new \InvalidArgumentException("Bad key size");
+            throw new \InvalidArgumentException('Bad key size');
         }
     }
 
     /**
-     * @param string  $kek             The Key Encryption Key
-     * @param string  $key             The key to wrap
-     * @param boolean $padding_enabled If false, the key to wrap must be a sequence of one or more 64-bit blocks (RFC3394 compliant), else the key size must be at least one octet (RFC5649 compliant)
+     * @param string $kek             The Key Encryption Key
+     * @param string $key             The key to wrap
+     * @param bool   $padding_enabled If false, the key to wrap must be a sequence of one or more 64-bit blocks (RFC3394 compliant), else the key size must be at least one octet (RFC5649 compliant)
      *
      * @throws \RuntimeException If the wrapped key is not valid
      */
@@ -101,24 +101,24 @@ trait AESKW
             $C[1] = self::getLSB($B);
         } elseif (1 < $N) {
             $R = $P;
-            for ($j = 0; $j <= 5; $j++) {
-                for ($i = 1; $i <= $N; $i++) {
-                    $B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$R[$i-1], MCRYPT_MODE_ECB);
-                    $t = $i + $j*$N;
+            for ($j = 0; $j <= 5; ++$j) {
+                for ($i = 1; $i <= $N; ++$i) {
+                    $B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$R[$i - 1], MCRYPT_MODE_ECB);
+                    $t = $i + $j * $N;
                     $A = self::toXBits(64, $t) ^ self::getMSB($B);
-                    $R[$i-1] = self::getLSB($B);
+                    $R[$i - 1] = self::getLSB($B);
                 }
             }
             $C = array_merge(array($A), $R);
         }
 
-        return implode("", $C);
+        return implode('', $C);
     }
 
     /**
-     * @param string  $kek             The Key Encryption Key
-     * @param string  $key             The key to unwrap
-     * @param boolean $padding_enabled If false, the AIV check must be RFC3394 compliant, else it must be RFC5649 or RFC3394 compliant
+     * @param string $kek             The Key Encryption Key
+     * @param string $key             The key to unwrap
+     * @param bool   $padding_enabled If false, the AIV check must be RFC3394 compliant, else it must be RFC5649 or RFC3394 compliant
      *
      * @return string The key unwrapped
      *
@@ -132,16 +132,16 @@ trait AESKW
         $N = count($P);
 
         if (1 >= $N) {
-            throw new \RuntimeException("Bad data");
+            throw new \RuntimeException('Bad data');
         } elseif (2 === $N) {
             $B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, $P[0].$P[1], MCRYPT_MODE_ECB);
             $unwrapped = self::getLSB($B);
             $A = self::getMSB($B);
         } else {
             $R = $P;
-            for ($j = 5; $j >= 0; $j--) {
-                for ($i = $N-1; $i >= 1; $i--) {
-                    $t = $i + $j*($N-1);
+            for ($j = 5; $j >= 0; --$j) {
+                for ($i = $N - 1; $i >= 1; --$i) {
+                    $t = $i + $j * ($N - 1);
                     $B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, (self::toXBits(64, $t) ^ $A).$R[$i], MCRYPT_MODE_ECB);
                     $A = self::getMSB($B);
                     $R[$i] = self::getLSB($B);
@@ -149,24 +149,24 @@ trait AESKW
             }
             unset($R[0]);
 
-            $unwrapped = implode("", $R);
+            $unwrapped = implode('', $R);
         }
         if (!self::checkInitialValue($unwrapped, $padding_enabled, $A)) {
-            throw new \RuntimeException("Integrity check failed");
+            throw new \RuntimeException('Integrity check failed');
         }
 
         return $unwrapped;
     }
 
     /**
-     * @param integer $bits
-     * @param integer $value
+     * @param int $bits
+     * @param int $value
      *
      * @return string
      */
     private static function toXBits($bits, $value)
     {
-        return hex2bin(str_pad(dechex($value), $bits/4, "0", STR_PAD_LEFT));
+        return hex2bin(str_pad(dechex($value), $bits / 4, '0', STR_PAD_LEFT));
     }
 
     /**
@@ -176,7 +176,7 @@ trait AESKW
      */
     private static function getMSB($value)
     {
-        return substr($value, 0, strlen($value)/2);
+        return substr($value, 0, strlen($value) / 2);
     }
 
     /**
@@ -186,6 +186,6 @@ trait AESKW
      */
     private static function getLSB($value)
     {
-        return substr($value, strlen($value)/2);
+        return substr($value, strlen($value) / 2);
     }
 }

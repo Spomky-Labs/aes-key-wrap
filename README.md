@@ -6,6 +6,7 @@ PHP AES Key Wrap
 
 [![Build Status](https://travis-ci.org/Spomky-Labs/aes-key-wrap.svg?branch=master)](https://travis-ci.org/Spomky-Labs/aes-key-wrap)
 [![HHVM Status](http://hhvm.h4cc.de/badge/spomky-labs/aes-key-wrap.png)](http://hhvm.h4cc.de/package/spomky-labs/aes-key-wrap)
+[![PHP 7 ready](http://php7ready.timesplinter.ch/Spomky-Labs/aes-key-wrap/badge.svg)](https://travis-ci.org/Spomky-Labs/aes-key-wrap)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/e61c91cf-1860-4416-946b-4c7b74ea01a5/big.png)](https://insight.sensiolabs.com/projects/e61c91cf-1860-4416-946b-4c7b74ea01a5)
 
