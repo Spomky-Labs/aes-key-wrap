@@ -18,30 +18,25 @@ PHP AES Key Wrap
 
 This library provides an implementation of the [RFC 3394 (Advanced Encryption Standard (AES) Key Wrap Algorithm)](https://tools.ietf.org/html/rfc3394) and the [RFC 5649 (Advanced Encryption Standard (AES) Key Wrap with Padding Algorithm)](https://tools.ietf.org/html/rfc5649).
 
-## The Release Process ##
+## The Release Process
 
 The release process [is described here](doc/Release.md).
 
-## Prerequisites ##
+## Prerequisites
 
 This library needs at least `PHP 5.4`.
 
 It has been successfully tested using `PHP 5.4` to `PHP 5.6`, `PHP 7.0` and `HHVM`.
 
-## Installation ##
+## Installation
 
 The preferred way to install this library is to rely on Composer:
 
 ```sh
-{
-    "require": {
-        // ...
-        "spomky-labs/aes-key-wrap": "~1.0.0"
-    }
-}
+composer require "spomky-labs/aes-key-wrap" "~2.0.0"
 ```
 
-## How to use ##
+## How to use
 
 Take a look at [How to use](doc/Use.md) to use this library.
 

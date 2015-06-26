@@ -7,7 +7,7 @@ This library provides three classes:
 * `AESKW\A192KW`: AES 192 key wrap
 * `AESKW\A256KW`: AES 256 key wrap
 
-### Wrap a key using RFC3394 ###
+# Wrap a key using RFC3394
 
 In the following example, we will wrap the key `key` using the KEK `kek` and `AES 128`:
 
@@ -30,7 +30,7 @@ $wrapped_key = A128KW::wrap($kek, $key); // Must return "1FA68B0A8112B447AEF34BD
 $unwrapped_key = A128KW::unwrap($kek, $wrapped_key); // The result must be the same value as the key
 ```
 
-### Wrap a key using RFC5649 ###
+# Wrap a key using RFC5649
 
 In the following example, we will wrap the key `key` using the KEK `kek` using `AES 128`. The main difference with the RFC3394 is that you can wrap a key of any practical size:
 
