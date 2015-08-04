@@ -9,6 +9,9 @@ trait AESKW
      * The RFC3394 set this value to 0xA6A6A6A6A6A6A6A6
      * The RFC5649 set this value to 0xA65959A6XXXXXXXX (The part with XXXXXXXX is the MLI, depends on the padding).
      *
+     * @param string $key             The key
+     * @param bool   $padding_enabled Enable padding (RFC5649)
+     *
      * @return string
      *
      * @see https://tools.ietf.org/html/rfc3394#section-2.2.3.1
@@ -29,6 +32,11 @@ trait AESKW
     }
 
     /**
+     * @param string $key
+     * @param bool   $padding_enabled
+     * @param string $iv
+     *
+     * @return bool
      */
     private static function checkInitialValue(&$key, $padding_enabled, $iv)
     {
@@ -66,7 +74,8 @@ trait AESKW
     }
 
     /**
-     * @param string $key The Key to wrap
+     * @param string $key             The Key to wrap
+     * @param bool   $padding_enabled
      *
      * @throws \InvalidArgumentException If the size of the Key is invalid
      */
@@ -85,7 +94,7 @@ trait AESKW
      * @param string $key             The key to wrap
      * @param bool   $padding_enabled If false, the key to wrap must be a sequence of one or more 64-bit blocks (RFC3394 compliant), else the key size must be at least one octet (RFC5649 compliant)
      *
-     * @throws \RuntimeException If the wrapped key is not valid
+     * @return string The wrapped key
      */
     public static function wrap($kek, $key, $padding_enabled = false)
     {
