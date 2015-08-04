@@ -9,6 +9,9 @@ trait AESKW
      * The RFC3394 set this value to 0xA6A6A6A6A6A6A6A6
      * The RFC5649 set this value to 0xA65959A6XXXXXXXX (The part with XXXXXXXX is the MLI, depends on the padding).
      *
+     * @param string $key             The key
+     * @param bool   $padding_enabled Enable padding (RFC5649)
+     *
      * @return string
      *
      * @see https://tools.ietf.org/html/rfc3394#section-2.2.3.1
@@ -16,11 +19,11 @@ trait AESKW
     private static function getInitialValue(&$key, $padding_enabled)
     {
         if (false === $padding_enabled) {
-            return hex2bin("A6A6A6A6A6A6A6A6");
+            return hex2bin('A6A6A6A6A6A6A6A6');
         }
 
         $MLI = strlen($key);
-        $iv = hex2bin("A65959A6").self::toXBits(32, $MLI);
+        $iv = hex2bin('A65959A6').self::toXBits(32, $MLI);
 
         $n = intval(ceil($MLI/8));
         $key = str_pad($key, 8*$n, "\0", STR_PAD_RIGHT);
@@ -29,11 +32,16 @@ trait AESKW
     }
 
     /**
+     * @param string $key
+     * @param bool   $padding_enabled
+     * @param string $iv
+     *
+     * @return bool
      */
     private static function checkInitialValue(&$key, $padding_enabled, $iv)
     {
         // RFC3394 compliant
-        if ($iv === hex2bin("A6A6A6A6A6A6A6A6")) {
+        if ($iv === hex2bin('A6A6A6A6A6A6A6A6')) {
             return true;
         }
 
@@ -43,7 +51,7 @@ trait AESKW
         }
 
         // The high-order half of the AIV according to the RFC5649
-        if (hex2bin("A65959A6") !== self::getMSB($iv)) {
+        if (hex2bin('A65959A6') !== self::getMSB($iv)) {
             return false;
         }
 
@@ -66,26 +74,27 @@ trait AESKW
     }
 
     /**
-     * @param string $key The Key to wrap
+     * @param string $key             The Key to wrap
+     * @param bool   $padding_enabled
      *
      * @throws \InvalidArgumentException If the size of the Key is invalid
      */
     private static function checkKeySize($key, $padding_enabled)
     {
         if (false === $padding_enabled && 0 !== strlen($key)% 8) {
-            throw new \InvalidArgumentException("Bad key size");
+            throw new \InvalidArgumentException('Bad key size');
         }
         if (1 > strlen($key)) {
-            throw new \InvalidArgumentException("Bad key size");
+            throw new \InvalidArgumentException('Bad key size');
         }
     }
 
     /**
-     * @param string  $kek             The Key Encryption Key
-     * @param string  $key             The key to wrap
-     * @param boolean $padding_enabled If false, the key to wrap must be a sequence of one or more 64-bit blocks (RFC3394 compliant), else the key size must be at least one octet (RFC5649 compliant)
+     * @param string $kek             The Key Encryption Key
+     * @param string $key             The key to wrap
+     * @param bool   $padding_enabled If false, the key to wrap must be a sequence of one or more 64-bit blocks (RFC3394 compliant), else the key size must be at least one octet (RFC5649 compliant)
      *
-     * @throws \RuntimeException If the wrapped key is not valid
+     * @return string The wrapped key
      */
     public static function wrap($kek, $key, $padding_enabled = false)
     {
@@ -112,13 +121,13 @@ trait AESKW
             $C = array_merge(array($A), $R);
         }
 
-        return implode("", $C);
+        return implode('', $C);
     }
 
     /**
-     * @param string  $kek             The Key Encryption Key
-     * @param string  $key             The key to unwrap
-     * @param boolean $padding_enabled If false, the AIV check must be RFC3394 compliant, else it must be RFC5649 or RFC3394 compliant
+     * @param string $kek             The Key Encryption Key
+     * @param string $key             The key to unwrap
+     * @param bool   $padding_enabled If false, the AIV check must be RFC3394 compliant, else it must be RFC5649 or RFC3394 compliant
      *
      * @return string The key unwrapped
      *
@@ -132,7 +141,7 @@ trait AESKW
         $N = count($P);
 
         if (1 >= $N) {
-            throw new \RuntimeException("Bad data");
+            throw new \RuntimeException('Bad data');
         } elseif (2 === $N) {
             $B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, $P[0].$P[1], MCRYPT_MODE_ECB);
             $unwrapped = self::getLSB($B);
@@ -149,24 +158,24 @@ trait AESKW
             }
             unset($R[0]);
 
-            $unwrapped = implode("", $R);
+            $unwrapped = implode('', $R);
         }
         if (!self::checkInitialValue($unwrapped, $padding_enabled, $A)) {
-            throw new \RuntimeException("Integrity check failed");
+            throw new \RuntimeException('Integrity check failed');
         }
 
         return $unwrapped;
     }
 
     /**
-     * @param integer $bits
-     * @param integer $value
+     * @param int $bits
+     * @param int $value
      *
      * @return string
      */
     private static function toXBits($bits, $value)
     {
-        return hex2bin(str_pad(dechex($value), $bits/4, "0", STR_PAD_LEFT));
+        return hex2bin(str_pad(dechex($value), $bits/4, '0', STR_PAD_LEFT));
     }
 
     /**

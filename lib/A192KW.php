@@ -4,8 +4,8 @@ namespace AESKW;
 
 class A192KW
 {
-	use AESKW;
-	
+    use AESKW;
+
     /**
      * @param string $kek The Key Encryption Key
      *
@@ -14,7 +14,7 @@ class A192KW
     protected static function checkKEKSize($kek)
     {
         if (strlen($kek) !== 24) {
-            throw new \InvalidArgumentException("Bad KEK size");
+            throw new \InvalidArgumentException('Bad KEK size');
         }
     }
 }
