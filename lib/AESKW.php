@@ -103,7 +103,7 @@ trait AESKW
         self::checkKeySize($key, $padding_enabled);
         $P = str_split($key, 8);
         $N = count($P);
-        $C = array();
+        $C = [];
         if (1 === $N) {
             $B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$P[0], MCRYPT_MODE_ECB);
             $C[0] = self::getMSB($B);
@@ -118,7 +118,7 @@ trait AESKW
                     $R[$i - 1] = self::getLSB($B);
                 }
             }
-            $C = array_merge(array($A), $R);
+            $C = array_merge([$A], $R);
         }
 
         return implode('', $C);
@@ -129,9 +129,9 @@ trait AESKW
      * @param string $key             The key to unwrap
      * @param bool   $padding_enabled If false, the AIV check must be RFC3394 compliant, else it must be RFC5649 or RFC3394 compliant
      *
-     * @return string The key unwrapped
-     *
      * @throws \RuntimeException If the wrapped key is not valid
+     *
+     * @return string The key unwrapped
      */
     public static function unwrap($kek, $key, $padding_enabled = false)
     {
