@@ -2,7 +2,7 @@ PHP AES Key Wrap
 ================
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/aes-key-wrap/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/aes-key-wrap/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Spomky-Labs/aes-key-wrap/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/aes-key-wrap/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/Spomky-Labs/aes-key-wrap/badge.svg?branch=master&service=github)](https://coveralls.io/github/Spomky-Labs/aes-key-wrap?branch=master)
 
 [![Build Status](https://travis-ci.org/Spomky-Labs/aes-key-wrap.svg?branch=master)](https://travis-ci.org/Spomky-Labs/aes-key-wrap)
 [![StyleCI](https://styleci.io/repos/28706263/shield)](https://styleci.io/repos/28706263)
