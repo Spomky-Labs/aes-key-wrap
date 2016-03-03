@@ -19,7 +19,7 @@ final class OpenSSLEncryptor implements EncryptorInterface
     public function __construct($kek)
     {
         $this->kek = $kek;
-        $this->method = 'aes-'.(strlen($kek)*8).'-ecb';
+        $this->method = 'aes-'.(strlen($kek) * 8).'-ecb';
     }
 
     /**
@@ -27,7 +27,7 @@ final class OpenSSLEncryptor implements EncryptorInterface
      */
     public function encrypt($data)
     {
-        return openssl_encrypt($data, $this->method, $this->kek, OPENSSL_ZERO_PADDING|OPENSSL_RAW_DATA);
+        return openssl_encrypt($data, $this->method, $this->kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
     }
 
     /**
@@ -35,6 +35,6 @@ final class OpenSSLEncryptor implements EncryptorInterface
      */
     public function decrypt($data)
     {
-        return openssl_decrypt($data, $this->method, $this->kek, OPENSSL_ZERO_PADDING|OPENSSL_RAW_DATA);
+        return openssl_decrypt($data, $this->method, $this->kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
     }
 }
