@@ -19,8 +19,6 @@ class A128KW
 
     /**
      * @param string $kek The Key Encryption Key
-     *
-     * @throws \InvalidArgumentException If the size of the KEK is invalid
      */
     protected static function checkKEKSize($kek)
     {
