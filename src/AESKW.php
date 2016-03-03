@@ -11,6 +11,8 @@
 
 namespace AESKW;
 
+use Assert\Assertion;
+
 trait AESKW
 {
     /**
@@ -85,17 +87,11 @@ trait AESKW
     /**
      * @param string $key             The Key to wrap
      * @param bool   $padding_enabled
-     *
-     * @throws \InvalidArgumentException If the size of the Key is invalid
      */
     private static function checkKeySize($key, $padding_enabled)
     {
-        if (false === $padding_enabled && 0 !== strlen($key) % 8) {
-            throw new \InvalidArgumentException('Bad key size');
-        }
-        if (1 > strlen($key)) {
-            throw new \InvalidArgumentException('Bad key size');
-        }
+        Assertion::false(false === $padding_enabled && 0 !== strlen($key) % 8, 'Bad key size');
+        Assertion::greaterOrEqualThan(strlen($key), 1, 'Bad key size');
     }
 
     /**
@@ -138,8 +134,6 @@ trait AESKW
      * @param string $key             The key to unwrap
      * @param bool   $padding_enabled If false, the AIV check must be RFC3394 compliant, else it must be RFC5649 or RFC3394 compliant
      *
-     * @throws \RuntimeException If the wrapped key is not valid
-     *
      * @return string The key unwrapped
      */
     public static function unwrap($kek, $key, $padding_enabled = false)
@@ -169,9 +163,7 @@ trait AESKW
 
             $unwrapped = implode('', $R);
         }
-        if (!self::checkInitialValue($unwrapped, $padding_enabled, $A)) {
-            throw new \RuntimeException('Integrity check failed');
-        }
+        Assertion::true(self::checkInitialValue($unwrapped, $padding_enabled, $A), 'Integrity check failed');
 
         return $unwrapped;
     }
