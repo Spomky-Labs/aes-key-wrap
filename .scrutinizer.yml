@@ -12,7 +12,5 @@ tools:
     php_code_coverage: false
     php_pdepend:
         excluded_dirs: [vendor, doc]
-    external_code_coverage:
-        timeout: 3600
 filter:
     excluded_paths: [vendor/*, doc/*]
