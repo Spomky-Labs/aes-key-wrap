@@ -1,14 +1,36 @@
 language: php
 
-php:
-    - 5.4
-    - 5.5
-    - 5.6
-    - 7.0
-    - nightly
-    - hhvm
+matrix:
+    fast_finish: true
+    include:
+        - php: 5.4
+          env: WITH_OPENSSL=true
+        - php: 5.4
+          env: WITH_MCRYPT=true
+        - php: 5.5
+          env: WITH_OPENSSL=true
+        - php: 5.5
+          env: WITH_MCRYPT=true
+        - php: 5.6
+          env: WITH_OPENSSL=true
+        - php: 5.6
+          env: WITH_MCRYPT=true
+        - php: 7.0
+          env: WITH_OPENSSL=true
+        - php: 7.0
+          env: WITH_MCRYPT=true
+        - php: hhvm
+          env: WITH_OPENSSL=true
+        - php: hhvm
+          env: WITH_MCRYPT=true
+        - php: nightly
+          env: WITH_OPENSSL=true
+        - php: nightly
+          env: WITH_MCRYPT=true
 
 before_script:
+    - sh -c 'if [ "$WITH_OPENSSL" != "" ]; then phpenv config-rm mcrypt.ini || true; fi;'
+    - sh -c 'if [ "$WITH_MCRYPT" != "" ]; then phpenv config-rm openssl.ini || true; fi;'
     - composer install
     - mkdir -p build/logs
  

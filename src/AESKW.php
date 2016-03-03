@@ -109,15 +109,19 @@ trait AESKW
         $P = str_split($key, 8);
         $N = count($P);
         $C = [];
+
+        $encryptor = self::getEncryptor($kek);
         if (1 === $N) {
-            $B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$P[0], MCRYPT_MODE_ECB);
+            //$B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$P[0], MCRYPT_MODE_ECB);
+            $B = $encryptor->encrypt($A.$P[0]);
             $C[0] = self::getMSB($B);
             $C[1] = self::getLSB($B);
         } elseif (1 < $N) {
             $R = $P;
             for ($j = 0; $j <= 5; ++$j) {
                 for ($i = 1; $i <= $N; ++$i) {
-                    $B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$R[$i - 1], MCRYPT_MODE_ECB);
+                    //$B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$R[$i - 1], MCRYPT_MODE_ECB);
+                    $B = $encryptor->encrypt($A.$R[$i - 1]);
                     $t = $i + $j * $N;
                     $A = self::toXBits(64, $t) ^ self::getMSB($B);
                     $R[$i - 1] = self::getLSB($B);
@@ -144,8 +148,11 @@ trait AESKW
         $N = count($P);
 
         Assertion::greaterThan($N, 1, 'Bad data');
+        $encryptor = self::getEncryptor($kek);
+
         if (2 === $N) {
-            $B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, $P[0].$P[1], MCRYPT_MODE_ECB);
+            //$B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, $P[0].$P[1], MCRYPT_MODE_ECB);
+            $B = $encryptor->decrypt($P[0].$P[1]);
             $unwrapped = self::getLSB($B);
             $A = self::getMSB($B);
         } else {
@@ -153,7 +160,8 @@ trait AESKW
             for ($j = 5; $j >= 0; --$j) {
                 for ($i = $N - 1; $i >= 1; --$i) {
                     $t = $i + $j * ($N - 1);
-                    $B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, (self::toXBits(64, $t) ^ $A).$R[$i], MCRYPT_MODE_ECB);
+                    //$B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, (self::toXBits(64, $t) ^ $A).$R[$i], MCRYPT_MODE_ECB);
+                    $B = $encryptor->decrypt((self::toXBits(64, $t) ^ $A).$R[$i]);
                     $A = self::getMSB($B);
                     $R[$i] = self::getLSB($B);
                 }
@@ -196,5 +204,21 @@ trait AESKW
     private static function getLSB($value)
     {
         return substr($value, strlen($value) / 2);
+    }
+
+    /**
+     * @param string $kek
+     *
+     * @return \AESKW\EncryptorInterface
+     */
+    private static function getEncryptor($kek)
+    {
+        if (extension_loaded('openssl')) {
+            return new OpenSSLEncryptor($kek);
+        } elseif (extension_loaded('mcrypt')) {
+            return new MCryptEncryptor($kek);
+        }
+
+        throw new \RuntimeException('Please install OpenSSL or MCrypt extension.');
     }
 }
