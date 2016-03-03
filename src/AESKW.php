@@ -112,7 +112,6 @@ trait AESKW
 
         $encryptor = self::getEncryptor($kek);
         if (1 === $N) {
-            //$B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$P[0], MCRYPT_MODE_ECB);
             $B = $encryptor->encrypt($A.$P[0]);
             $C[0] = self::getMSB($B);
             $C[1] = self::getLSB($B);
@@ -120,7 +119,6 @@ trait AESKW
             $R = $P;
             for ($j = 0; $j <= 5; ++$j) {
                 for ($i = 1; $i <= $N; ++$i) {
-                    //$B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$R[$i - 1], MCRYPT_MODE_ECB);
                     $B = $encryptor->encrypt($A.$R[$i - 1]);
                     $t = $i + $j * $N;
                     $A = self::toXBits(64, $t) ^ self::getMSB($B);
@@ -151,7 +149,6 @@ trait AESKW
         $encryptor = self::getEncryptor($kek);
 
         if (2 === $N) {
-            //$B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, $P[0].$P[1], MCRYPT_MODE_ECB);
             $B = $encryptor->decrypt($P[0].$P[1]);
             $unwrapped = self::getLSB($B);
             $A = self::getMSB($B);
@@ -160,7 +157,6 @@ trait AESKW
             for ($j = 5; $j >= 0; --$j) {
                 for ($i = $N - 1; $i >= 1; --$i) {
                     $t = $i + $j * ($N - 1);
-                    //$B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, (self::toXBits(64, $t) ^ $A).$R[$i], MCRYPT_MODE_ECB);
                     $B = $encryptor->decrypt((self::toXBits(64, $t) ^ $A).$R[$i]);
                     $A = self::getMSB($B);
                     $R[$i] = self::getLSB($B);
