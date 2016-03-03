@@ -143,9 +143,8 @@ trait AESKW
         $A = $P[0];
         $N = count($P);
 
-        if (1 >= $N) {
-            throw new \RuntimeException('Bad data');
-        } elseif (2 === $N) {
+        Assertion::greaterThan($N, 1, 'Bad data');
+        if (2 === $N) {
             $B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, $P[0].$P[1], MCRYPT_MODE_ECB);
             $unwrapped = self::getLSB($B);
             $A = self::getMSB($B);
