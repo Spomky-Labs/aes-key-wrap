@@ -9,7 +9,7 @@ tools:
     php_code_sniffer: true
     php_analyzer: true
     sensiolabs_security_checker: true
-    php_code_coverage: true
+    php_code_coverage: false
     php_pdepend:
         excluded_dirs: [vendor, doc]
     external_code_coverage:
