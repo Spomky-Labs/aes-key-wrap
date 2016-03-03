@@ -11,6 +11,8 @@
 
 namespace AESKW;
 
+use Assert\Assertion;
+
 class A192KW
 {
     use AESKW;
