@@ -11,6 +11,8 @@
 
 namespace AESKW;
 
+use Assertion\Assertion;
+
 class A128KW
 {
     use AESKW;
@@ -22,8 +24,6 @@ class A128KW
      */
     protected static function checkKEKSize($kek)
     {
-        if (strlen($kek) !== 16) {
-            throw new \InvalidArgumentException('Bad KEK size');
-        }
+        Assertion::eq(strlen($kek), 16, 'Bad KEK size');
     }
 }
