@@ -11,7 +11,7 @@
 
 namespace AESKW;
 
-use Assertion\Assertion;
+use Assert\Assertion;
 
 class A128KW
 {
