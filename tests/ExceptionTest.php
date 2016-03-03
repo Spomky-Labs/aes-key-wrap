@@ -69,7 +69,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        RuntimeException
+     * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage Integrity check failed
      */
     public function testIntegrityCheckFailed()
@@ -105,7 +105,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        RuntimeException
+     * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage Integrity check failed
      */
     public function testA128KWIntegrityNotVerified()
@@ -117,7 +117,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        RuntimeException
+     * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage Bad data
      */
     public function testWrap64BitsKeyDataWith128BitKEK()
@@ -129,7 +129,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        RuntimeException
+     * @expectedException        InvalidArgumentException
      * @expectedExceptionMessage Integrity check failed
      */
     public function testBadData()
