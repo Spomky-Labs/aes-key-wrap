@@ -33,7 +33,7 @@ trait AESKW
             return hex2bin('A6A6A6A6A6A6A6A6');
         }
 
-        $MLI = strlen($key);
+        $MLI = mb_strlen($key, '8bit');
         $iv = hex2bin('A65959A6').self::toXBits(32, $MLI);
 
         $n = intval(ceil($MLI / 8));
@@ -66,7 +66,7 @@ trait AESKW
             return false;
         }
 
-        $n = strlen($key) / 8;
+        $n = mb_strlen($key, '8bit') / 8;
         $MLI = hexdec(bin2hex(ltrim(self::getLSB($iv), "\0")));
 
         if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
@@ -75,11 +75,11 @@ trait AESKW
 
         $b = 8 * $n - $MLI;
         for ($i = 0; $i < $b; ++$i) {
-            if ("\0" !== substr($key, $MLI + $i, 1)) {
+            if ("\0" !== mb_substr($key, $MLI + $i, 1, '8bit')) {
                 return false;
             }
         }
-        $key = substr($key, 0, $MLI);
+        $key = mb_substr($key, 0, $MLI, '8bit');
 
         return true;
     }
@@ -90,8 +90,8 @@ trait AESKW
      */
     private static function checkKeySize($key, $padding_enabled)
     {
-        Assertion::false(false === $padding_enabled && 0 !== strlen($key) % 8, 'Bad key size');
-        Assertion::greaterOrEqualThan(strlen($key), 1, 'Bad key size');
+        Assertion::false(false === $padding_enabled && 0 !== mb_strlen($key, '8bit') % 8, 'Bad key size');
+        Assertion::greaterOrEqualThan(mb_strlen($key, '8bit'), 1, 'Bad key size');
     }
 
     /**
@@ -149,7 +149,6 @@ trait AESKW
         $encryptor = self::getEncryptor($kek);
 
         if (2 === $N) {
-            //$B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, $P[0].$P[1], MCRYPT_MODE_ECB);
             $B = $encryptor->decrypt($P[0].$P[1]);
             $unwrapped = self::getLSB($B);
             $A = self::getMSB($B);
@@ -158,7 +157,6 @@ trait AESKW
             for ($j = 5; $j >= 0; --$j) {
                 for ($i = $N - 1; $i >= 1; --$i) {
                     $t = $i + $j * ($N - 1);
-                    //$B = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $kek, (self::toXBits(64, $t) ^ $A).$R[$i], MCRYPT_MODE_ECB);
                     $B = $encryptor->decrypt((self::toXBits(64, $t) ^ $A).$R[$i]);
                     $A = self::getMSB($B);
                     $R[$i] = self::getLSB($B);
@@ -191,7 +189,7 @@ trait AESKW
      */
     private static function getMSB($value)
     {
-        return substr($value, 0, strlen($value) / 2);
+        return mb_substr($value, 0, mb_strlen($value, '8bit') / 2, '8bit');
     }
 
     /**
@@ -201,9 +199,8 @@ trait AESKW
      */
     private static function getLSB($value)
     {
-        return substr($value, strlen($value) / 2);
+        return mb_substr($value, mb_strlen($value, '8bit') / 2, null, '8bit');
     }
-
     /**
      * @param string $kek
      *
