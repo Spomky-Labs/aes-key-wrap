@@ -112,7 +112,6 @@ trait AESKW
 
         $encryptor = self::getEncryptor($kek);
         if (1 === $N) {
-            //$B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$P[0], MCRYPT_MODE_ECB);
             $B = $encryptor->encrypt($A.$P[0]);
             $C[0] = self::getMSB($B);
             $C[1] = self::getLSB($B);
@@ -120,7 +119,6 @@ trait AESKW
             $R = $P;
             for ($j = 0; $j <= 5; ++$j) {
                 for ($i = 1; $i <= $N; ++$i) {
-                    //$B = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $kek, $A.$R[$i - 1], MCRYPT_MODE_ECB);
                     $B = $encryptor->encrypt($A.$R[$i - 1]);
                     $t = $i + $j * $N;
                     $A = self::toXBits(64, $t) ^ self::getMSB($B);
@@ -215,8 +213,6 @@ trait AESKW
     {
         if (extension_loaded('openssl')) {
             return new OpenSSLEncryptor($kek);
-        } elseif (extension_loaded('mcrypt')) {
-            return new MCryptEncryptor($kek);
         }
 
         throw new \RuntimeException('Please install OpenSSL or MCrypt extension.');

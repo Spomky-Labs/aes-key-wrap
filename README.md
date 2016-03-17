@@ -35,7 +35,7 @@ It has been successfully tested using `PHP 5.4` to `PHP 5.6`, `PHP 7.0` and `HHV
 The preferred way to install this library is to rely on Composer:
 
 ```sh
-composer require "spomky-labs/aes-key-wrap" "~2.0.0"
+composer require "spomky-labs/aes-key-wrap" "^3.0"
 ```
 
 ## How to use
