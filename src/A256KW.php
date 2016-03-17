@@ -22,6 +22,6 @@ class A256KW
      */
     protected static function checkKEKSize($kek)
     {
-        Assertion::eq(strlen($kek), 32, 'Bad KEK size');
+        Assertion::eq(mb_strlen($kek, '8bit'), 32, 'Bad KEK size');
     }
 }

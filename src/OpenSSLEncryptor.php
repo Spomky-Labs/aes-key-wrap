@@ -19,7 +19,7 @@ final class OpenSSLEncryptor implements EncryptorInterface
     public function __construct($kek)
     {
         $this->kek = $kek;
-        $this->method = 'aes-'.(strlen($kek) * 8).'-ecb';
+        $this->method = 'aes-'.(mb_strlen($kek, '8bit') * 8).'-ecb';
     }
 
     /**
