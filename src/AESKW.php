@@ -212,6 +212,6 @@ trait AESKW
             return new OpenSSLEncryptor($kek);
         }
 
-        throw new \RuntimeException('Please install OpenSSL or MCrypt extension.');
+        throw new \RuntimeException('Please install OpenSSL extension.');
     }
 }
