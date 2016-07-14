@@ -1,6 +1,6 @@
 {
     "name": "spomky-labs/aes-key-wrap",
-    "description": "AES Kew Wrap for PHP.",
+    "description": "AES Key Wrap for PHP.",
     "type": "library",
     "license": "MIT",
     "keywords": ["A128KW", "A192KW", "A256KW", "AES", "Key", "Wrap", "Padding", "RFC3394", "RFC5649"],
