@@ -201,6 +201,7 @@ trait AESKW
     {
         return mb_substr($value, mb_strlen($value, '8bit') / 2, null, '8bit');
     }
+
     /**
      * @param string $kek
      *
