@@ -23,9 +23,9 @@
     },
     "require": {
         "php": "^5.4|^7.0",
+        "ext-mbstring": "*",
         "beberlei/assert": "^2.4",
-        "lib-openssl": "*",
-        "symfony/polyfill-mbstring": "^1.1"
+        "lib-openssl": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.5|^5.0",
