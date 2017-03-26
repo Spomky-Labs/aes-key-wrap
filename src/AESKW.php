@@ -11,8 +11,6 @@
 
 namespace AESKW;
 
-use Assert\Assertion;
-
 trait AESKW
 {
     /**
@@ -27,7 +25,7 @@ trait AESKW
      *
      * @see https://tools.ietf.org/html/rfc3394#section-2.2.3.1
      */
-    private static function getInitialValue(&$key, $padding_enabled)
+    private static function getInitialValue(string &$key, bool $padding_enabled): string
     {
         if (false === $padding_enabled) {
             return hex2bin('A6A6A6A6A6A6A6A6');
@@ -49,7 +47,7 @@ trait AESKW
      *
      * @return bool
      */
-    private static function checkInitialValue(&$key, $padding_enabled, $iv)
+    private static function checkInitialValue(string &$key, bool $padding_enabled, string $iv): bool
     {
         // RFC3394 compliant
         if ($iv === hex2bin('A6A6A6A6A6A6A6A6')) {
@@ -88,10 +86,14 @@ trait AESKW
      * @param string $key             The Key to wrap
      * @param bool   $padding_enabled
      */
-    private static function checkKeySize($key, $padding_enabled)
+    private static function checkKeySize(string $key, bool $padding_enabled)
     {
-        Assertion::false(false === $padding_enabled && 0 !== mb_strlen($key, '8bit') % 8, 'Bad key size');
-        Assertion::greaterOrEqualThan(mb_strlen($key, '8bit'), 1, 'Bad key size');
+        if (empty($key)) {
+            throw new \InvalidArgumentException('Bad key size');
+        }
+        if (false === $padding_enabled && 0 !== mb_strlen($key, '8bit') % 8) {
+            throw new \InvalidArgumentException('Bad key size');
+        }
     }
 
     /**
@@ -101,7 +103,7 @@ trait AESKW
      *
      * @return string The wrapped key
      */
-    public static function wrap($kek, $key, $padding_enabled = false)
+    public static function wrap(string $kek, string $key, bool $padding_enabled = false): string
     {
         self::checkKEKSize($kek);
         $A = self::getInitialValue($key, $padding_enabled);
@@ -110,16 +112,15 @@ trait AESKW
         $N = count($P);
         $C = [];
 
-        $encryptor = self::getEncryptor($kek);
         if (1 === $N) {
-            $B = $encryptor->encrypt($A.$P[0]);
+            $B = self::encrypt($kek, $A.$P[0]);
             $C[0] = self::getMSB($B);
             $C[1] = self::getLSB($B);
         } elseif (1 < $N) {
             $R = $P;
             for ($j = 0; $j <= 5; ++$j) {
                 for ($i = 1; $i <= $N; ++$i) {
-                    $B = $encryptor->encrypt($A.$R[$i - 1]);
+                    $B = self::encrypt($kek, $A.$R[$i - 1]);
                     $t = $i + $j * $N;
                     $A = self::toXBits(64, $t) ^ self::getMSB($B);
                     $R[$i - 1] = self::getLSB($B);
@@ -138,18 +139,17 @@ trait AESKW
      *
      * @return string The key unwrapped
      */
-    public static function unwrap($kek, $key, $padding_enabled = false)
+    public static function unwrap(string $kek, string $key, bool $padding_enabled = false): string
     {
         self::checkKEKSize($kek);
         $P = str_split($key, 8);
         $A = $P[0];
         $N = count($P);
 
-        Assertion::greaterThan($N, 1, 'Bad data');
-        $encryptor = self::getEncryptor($kek);
-
-        if (2 === $N) {
-            $B = $encryptor->decrypt($P[0].$P[1]);
+        if (2 > $N) {
+            throw new \InvalidArgumentException('Bad data');
+        } elseif (2 === $N) {
+            $B = self::decrypt($kek, $P[0].$P[1]);
             $unwrapped = self::getLSB($B);
             $A = self::getMSB($B);
         } else {
@@ -157,7 +157,7 @@ trait AESKW
             for ($j = 5; $j >= 0; --$j) {
                 for ($i = $N - 1; $i >= 1; --$i) {
                     $t = $i + $j * ($N - 1);
-                    $B = $encryptor->decrypt((self::toXBits(64, $t) ^ $A).$R[$i]);
+                    $B = self::decrypt($kek, (self::toXBits(64, $t) ^ $A).$R[$i]);
                     $A = self::getMSB($B);
                     $R[$i] = self::getLSB($B);
                 }
@@ -166,10 +166,17 @@ trait AESKW
 
             $unwrapped = implode('', $R);
         }
-        Assertion::true(self::checkInitialValue($unwrapped, $padding_enabled, $A), 'Integrity check failed');
+        if (false === self::checkInitialValue($unwrapped, $padding_enabled, $A)) {
+            throw new \InvalidArgumentException('Integrity check failed!');
+        }
 
         return $unwrapped;
     }
+
+    /**
+     * @return int
+     */
+    abstract protected static function getExpectedKEKSize(): int;
 
     /**
      * @param int $bits
@@ -177,7 +184,7 @@ trait AESKW
      *
      * @return string
      */
-    private static function toXBits($bits, $value)
+    private static function toXBits(int $bits, int $value): string
     {
         return hex2bin(str_pad(dechex($value), $bits / 4, '0', STR_PAD_LEFT));
     }
@@ -187,7 +194,7 @@ trait AESKW
      *
      * @return string
      */
-    private static function getMSB($value)
+    private static function getMSB(string $value): string
     {
         return mb_substr($value, 0, mb_strlen($value, '8bit') / 2, '8bit');
     }
@@ -197,22 +204,44 @@ trait AESKW
      *
      * @return string
      */
-    private static function getLSB($value)
+    private static function getLSB(string $value): string
     {
         return mb_substr($value, mb_strlen($value, '8bit') / 2, null, '8bit');
     }
 
     /**
+     * {@inheritdoc}
+     */
+    private static function encrypt(string $kek, string $data): string
+    {
+        return openssl_encrypt($data, self::getMethod($kek), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    private static function decrypt(string $kek, string $data): string
+    {
+        return openssl_decrypt($data, self::getMethod($kek), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+    }
+
+    /**
+     * @param string $kek The Key Encryption Key
+     */
+    private static function checkKEKSize(string $kek)
+    {
+        if (mb_strlen($kek, '8bit') !== self::getExpectedKEKSize()) {
+            throw new \InvalidArgumentException('Bad KEK size');
+        }
+    }
+
+    /**
      * @param string $kek
      *
-     * @return \AESKW\EncryptorInterface
+     * @return string
      */
-    private static function getEncryptor($kek)
+    private static function getMethod(string $kek): string
     {
-        if (extension_loaded('openssl')) {
-            return new OpenSSLEncryptor($kek);
-        }
-
-        throw new \RuntimeException('Please install OpenSSL extension.');
+        return sprintf('aes-%d-ecb', mb_strlen($kek, '8bit') * 8);
     }
 }

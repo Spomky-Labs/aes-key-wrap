@@ -1,13 +1,15 @@
 language: php
 
-php:
-    - 5.4
-    - 5.5
-    - 5.6
-    - 7.0
-    - 7.1
-    - nightly
-    - hhvm
+matrix:
+    allow_failures:
+        - php: hhvm
+        - php: nightly
+    fast_finish: true
+    include:
+        - php: 7.0
+        - php: 7.1
+        - php: hhvm
+        - php: nightly
 
 before_script:
     - composer self-update
@@ -19,3 +21,4 @@ script:
  
 after_success:
     - vendor/bin/coveralls --no-interaction
+    -  php -r "require_once 'vendor/autoload.php'; AESKW\Tests\Performance::run();";

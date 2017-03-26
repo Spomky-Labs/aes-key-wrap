@@ -26,16 +26,17 @@ The release process [is described here](doc/Release.md).
 
 ## Prerequisites
 
-This library needs at least `PHP 5.4`.
+This library needs at least `PHP 7.0`.
+It has been successfully tested using `PHP 7.0`, `PHP 7.1` and `HHVM`.
 
-It has been successfully tested using `PHP 5.4` to `PHP 5.6`, `PHP 7.0` and `HHVM`.
+For `PHP 5.4+`, please use the version `3.x` of this library.
 
 ## Installation
 
 The preferred way to install this library is to rely on Composer:
 
 ```sh
-composer require "spomky-labs/aes-key-wrap" "^3.0"
+composer require spomky-labs/aes-key-wrap
 ```
 
 ## How to use

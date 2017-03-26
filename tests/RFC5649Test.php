@@ -9,14 +9,17 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+namespace AESKW\Tests;
+
 use AESKW\A192KW;
+use PHPUnit\Framework\TestCase;
 
 /**
  * These tests come from the RFCRFC5649Test.
  *
  * @see https://tools.ietf.org/html/rfc5649#section-6
  */
-class RFC5649Test extends \PHPUnit_Framework_TestCase
+final class RFC5649Test extends TestCase
 {
     public function testWrap20BytesKeyDataWith192BitKEK()
     {
