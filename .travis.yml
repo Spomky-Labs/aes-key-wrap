@@ -5,10 +5,10 @@ matrix:
         - php: nightly
     fast_finish: true
     include:
-        - 7.0
-        - 7.1
-        - nightly
-        - hhvm
+        - php: 7.0
+        - php: 7.1
+        - php: hhvm
+        - php: nightly
 
 before_script:
     - composer self-update
