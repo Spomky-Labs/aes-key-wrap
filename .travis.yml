@@ -1,6 +1,6 @@
 language: php
 
-php:
+matrix:
     allow_failures:
         - php: nightly
     fast_finish: true
