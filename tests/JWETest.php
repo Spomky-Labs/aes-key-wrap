@@ -9,14 +9,17 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+namespace AESKW\Tests;
+
 use AESKW\A128KW;
+use PHPUnit\Framework\TestCase;
 
 /**
  * This test comes from the JWE specification.
  *
  * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.3.3
  */
-class JWETest extends \PHPUnit_Framework_TestCase
+final class JWETest extends TestCase
 {
     public function testCEKEncryption()
     {

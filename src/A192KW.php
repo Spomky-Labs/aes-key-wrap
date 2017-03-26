@@ -11,17 +11,15 @@
 
 namespace AESKW;
 
-use Assert\Assertion;
-
-class A192KW
+final class A192KW
 {
     use AESKW;
 
     /**
-     * @param string $kek The Key Encryption Key
+     * {@inheritdoc}
      */
-    protected static function checkKEKSize($kek)
+    protected static function getExpectedKEKSize(): int
     {
-        Assertion::eq(mb_strlen($kek, '8bit'), 24, 'Bad KEK size');
+        return 24;
     }
 }

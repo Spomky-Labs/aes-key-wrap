@@ -9,16 +9,19 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+namespace AESKW\Tests;
+
 use AESKW\A128KW;
 use AESKW\A192KW;
 use AESKW\A256KW;
+use PHPUnit\Framework\TestCase;
 
 /**
  * These tests come from the RFC3394.
  *
  * @see https://www.ietf.org/rfc/rfc3394.txt#4
  */
-class ExceptionTest extends \PHPUnit_Framework_TestCase
+final class ExceptionTest extends TestCase
 {
     /**
      * @expectedException        InvalidArgumentException
