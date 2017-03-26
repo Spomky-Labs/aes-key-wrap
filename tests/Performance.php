@@ -20,7 +20,7 @@ use AESKW\A256KW;
  * You just have to call Performance::run();
  * By default, tests are performed 1000 times.
  * You can modify it by passing a positive integer  as first argument:
- * Performance::run(10000);
+ * Performance::run(10000);.
  */
 final class Performance
 {
@@ -37,7 +37,7 @@ final class Performance
     }
 
     /**
-     * @param int $nb
+     * @param int   $nb
      * @param array $case
      */
     private static function wrap(int $nb, array $case)
@@ -48,11 +48,11 @@ final class Performance
         $padding = $case['padding'];
         $time = self::do($class, 'wrap', $nb, $kek, $data, $padding);
 
-        printf('%s: %f milliseconds/wrap'.PHP_EOL, $case['name'],$time);
+        printf('%s: %f milliseconds/wrap'.PHP_EOL, $case['name'], $time);
     }
 
     /**
-     * @param int $nb
+     * @param int   $nb
      * @param array $case
      */
     private static function unwrap(int $nb, array $case)
@@ -63,7 +63,7 @@ final class Performance
         $padding = $case['padding'];
         $time = self::do($class, 'unwrap', $nb, $kek, $result, $padding);
 
-        printf('%s: %f milliseconds/unwrap'.PHP_EOL, $case['name'],$time);
+        printf('%s: %f milliseconds/unwrap'.PHP_EOL, $case['name'], $time);
     }
 
     /**
