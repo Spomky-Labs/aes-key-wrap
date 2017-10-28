@@ -105,7 +105,6 @@ trait AESKW
      */
     public static function wrap(string $kek, string $key, bool $padding_enabled = false): string
     {
-        self::checkKEKSize($kek);
         $A = self::getInitialValue($key, $padding_enabled);
         self::checkKeySize($key, $padding_enabled);
         $P = str_split($key, 8);
@@ -141,7 +140,6 @@ trait AESKW
      */
     public static function unwrap(string $kek, string $key, bool $padding_enabled = false): string
     {
-        self::checkKEKSize($kek);
         $P = str_split($key, 8);
         $A = $P[0];
         $N = count($P);
@@ -172,11 +170,6 @@ trait AESKW
 
         return $unwrapped;
     }
-
-    /**
-     * @return int
-     */
-    abstract protected static function getExpectedKEKSize(): int;
 
     /**
      * @param int $bits
@@ -223,25 +216,5 @@ trait AESKW
     private static function decrypt(string $kek, string $data): string
     {
         return openssl_decrypt($data, self::getMethod($kek), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
-    }
-
-    /**
-     * @param string $kek The Key Encryption Key
-     */
-    private static function checkKEKSize(string $kek)
-    {
-        if (mb_strlen($kek, '8bit') !== self::getExpectedKEKSize()) {
-            throw new \InvalidArgumentException('Bad KEK size');
-        }
-    }
-
-    /**
-     * @param string $kek
-     *
-     * @return string
-     */
-    private static function getMethod(string $kek): string
-    {
-        return sprintf('aes-%d-ecb', mb_strlen($kek, '8bit') * 8);
     }
 }

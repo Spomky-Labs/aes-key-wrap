@@ -18,8 +18,8 @@ final class A192KW
     /**
      * {@inheritdoc}
      */
-    protected static function getExpectedKEKSize(): int
+    protected static function getMethod(): string
     {
-        return 24;
+        return 'aes-192-ecb';
     }
 }

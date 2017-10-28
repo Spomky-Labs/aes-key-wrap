@@ -18,8 +18,8 @@ final class A256KW
     /**
      * {@inheritdoc}
      */
-    protected static function getExpectedKEKSize(): int
+    protected static function getMethod(): string
     {
-        return 32;
+        return 'aes-256-ecb';
     }
 }

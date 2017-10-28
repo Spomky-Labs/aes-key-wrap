@@ -13,7 +13,6 @@ namespace AESKW\Tests;
 
 use AESKW\A128KW;
 use AESKW\A192KW;
-use AESKW\A256KW;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,55 +23,7 @@ use PHPUnit\Framework\TestCase;
 final class ExceptionTest extends TestCase
 {
     /**
-     * @expectedException        InvalidArgumentException
-     * @expectedExceptionMessage Bad KEK size
-     */
-    public function testAESKWBadKEKSize()
-    {
-        $kek = hex2bin('00');
-        $data = hex2bin('00112233445566778899AABBCCDDEEFF');
-
-        A128KW::wrap($kek, $data);
-    }
-
-    /**
-     * @expectedException        InvalidArgumentException
-     * @expectedExceptionMessage Bad KEK size
-     */
-    public function testA128KWBadKEKSize()
-    {
-        $kek = hex2bin('0001020304050607');
-        $data = hex2bin('00112233445566778899AABBCCDDEEFF');
-
-        A128KW::wrap($kek, $data);
-    }
-
-    /**
-     * @expectedException        InvalidArgumentException
-     * @expectedExceptionMessage Bad KEK size
-     */
-    public function testA192KWBadKEKSize()
-    {
-        $kek = hex2bin('00010203040506070809101112131415');
-        $data = hex2bin('00112233445566778899AABBCCDDEEFF');
-
-        A192KW::wrap($kek, $data);
-    }
-
-    /**
-     * @expectedException        InvalidArgumentException
-     * @expectedExceptionMessage Bad KEK size
-     */
-    public function testA256KWBadKEKSize()
-    {
-        $kek = hex2bin('00010203040506070809101112131415');
-        $data = hex2bin('00112233445566778899AABBCCDDEEFF');
-
-        A256KW::wrap($kek, $data);
-    }
-
-    /**
-     * @expectedException        InvalidArgumentException
+     * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage Integrity check failed
      */
     public function testIntegrityCheckFailed()
@@ -84,7 +35,7 @@ final class ExceptionTest extends TestCase
     }
 
     /**
-     * @expectedException        InvalidArgumentException
+     * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage Bad key size
      */
     public function testA128KWBadKeySize()
@@ -96,7 +47,7 @@ final class ExceptionTest extends TestCase
     }
 
     /**
-     * @expectedException        InvalidArgumentException
+     * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage Bad key size
      */
     public function testA128KWEmptyKey()
@@ -108,7 +59,7 @@ final class ExceptionTest extends TestCase
     }
 
     /**
-     * @expectedException        InvalidArgumentException
+     * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage Integrity check failed
      */
     public function testA128KWIntegrityNotVerified()
@@ -120,7 +71,7 @@ final class ExceptionTest extends TestCase
     }
 
     /**
-     * @expectedException        InvalidArgumentException
+     * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage Bad data
      */
     public function testWrap64BitsKeyDataWith128BitKEK()
@@ -132,7 +83,7 @@ final class ExceptionTest extends TestCase
     }
 
     /**
-     * @expectedException        InvalidArgumentException
+     * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage Integrity check failed
      */
     public function testBadData()
