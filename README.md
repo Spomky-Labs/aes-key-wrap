@@ -5,10 +5,6 @@ PHP AES Key Wrap
 [![Coverage Status](https://coveralls.io/repos/Spomky-Labs/aes-key-wrap/badge.svg?branch=master&service=github)](https://coveralls.io/github/Spomky-Labs/aes-key-wrap?branch=master)
 
 [![Build Status](https://travis-ci.org/Spomky-Labs/aes-key-wrap.svg?branch=master)](https://travis-ci.org/Spomky-Labs/aes-key-wrap)
-[![StyleCI](https://styleci.io/repos/28706263/shield)](https://styleci.io/repos/28706263)
-
-[![HHVM Status](http://hhvm.h4cc.de/badge/spomky-labs/aes-key-wrap.png)](http://hhvm.h4cc.de/package/spomky-labs/aes-key-wrap)
-[![PHP 7 ready](http://php7ready.timesplinter.ch/Spomky-Labs/aes-key-wrap/badge.svg)](https://travis-ci.org/Spomky-Labs/aes-key-wrap)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/e61c91cf-1860-4416-946b-4c7b74ea01a5/big.png)](https://insight.sensiolabs.com/projects/e61c91cf-1860-4416-946b-4c7b74ea01a5)
 
@@ -26,8 +22,8 @@ The release process [is described here](doc/Release.md).
 
 ## Prerequisites
 
-This library needs at least `PHP 7.0`.
-It has been successfully tested using `PHP 7.0`, `PHP 7.1` and `HHVM`.
+This library needs at least `PHP 7.1`.
+It has been successfully tested using `PHP 7.1`, `PHP 7.2` and `HHVM`.
 
 For `PHP 5.4+`, please use the version `3.x` of this library.
 

@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2016 Spomky-Labs
+ * Copyright (c) 2014-2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -21,36 +23,27 @@ trait AESKW
      * @param string $key             The key
      * @param bool   $padding_enabled Enable padding (RFC5649)
      *
-     * @return string
-     *
      * @see https://tools.ietf.org/html/rfc3394#section-2.2.3.1
      */
     private static function getInitialValue(string &$key, bool $padding_enabled): string
     {
         if (false === $padding_enabled) {
-            return hex2bin('A6A6A6A6A6A6A6A6');
+            return \hex2bin('A6A6A6A6A6A6A6A6');
         }
 
-        $MLI = mb_strlen($key, '8bit');
-        $iv = hex2bin('A65959A6').self::toXBits(32, $MLI);
+        $MLI = \mb_strlen($key, '8bit');
+        $iv = \hex2bin('A65959A6').self::toXBits(32, $MLI);
 
-        $n = intval(ceil($MLI / 8));
-        $key = str_pad($key, 8 * $n, "\0", STR_PAD_RIGHT);
+        $n = \intval(\ceil($MLI / 8));
+        $key = \str_pad($key, 8 * $n, "\0", STR_PAD_RIGHT);
 
         return $iv;
     }
 
-    /**
-     * @param string $key
-     * @param bool   $padding_enabled
-     * @param string $iv
-     *
-     * @return bool
-     */
     private static function checkInitialValue(string &$key, bool $padding_enabled, string $iv): bool
     {
         // RFC3394 compliant
-        if ($iv === hex2bin('A6A6A6A6A6A6A6A6')) {
+        if ($iv === \hex2bin('A6A6A6A6A6A6A6A6')) {
             return true;
         }
 
@@ -60,12 +53,12 @@ trait AESKW
         }
 
         // The high-order half of the AIV according to the RFC5649
-        if (hex2bin('A65959A6') !== self::getMSB($iv)) {
+        if (\hex2bin('A65959A6') !== self::getMSB($iv)) {
             return false;
         }
 
-        $n = mb_strlen($key, '8bit') / 8;
-        $MLI = hexdec(bin2hex(ltrim(self::getLSB($iv), "\0")));
+        $n = \mb_strlen($key, '8bit') / 8;
+        $MLI = \hexdec(\bin2hex(\ltrim(self::getLSB($iv), "\0")));
 
         if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
             return false;
@@ -73,25 +66,24 @@ trait AESKW
 
         $b = 8 * $n - $MLI;
         for ($i = 0; $i < $b; ++$i) {
-            if ("\0" !== mb_substr($key, $MLI + $i, 1, '8bit')) {
+            if ("\0" !== \mb_substr($key, $MLI + $i, 1, '8bit')) {
                 return false;
             }
         }
-        $key = mb_substr($key, 0, $MLI, '8bit');
+        $key = \mb_substr($key, 0, $MLI, '8bit');
 
         return true;
     }
 
     /**
-     * @param string $key             The Key to wrap
-     * @param bool   $padding_enabled
+     * @param string $key The Key to wrap
      */
     private static function checkKeySize(string $key, bool $padding_enabled)
     {
         if (empty($key)) {
             throw new \InvalidArgumentException('Bad key size');
         }
-        if (false === $padding_enabled && 0 !== mb_strlen($key, '8bit') % 8) {
+        if (false === $padding_enabled && 0 !== \mb_strlen($key, '8bit') % 8) {
             throw new \InvalidArgumentException('Bad key size');
         }
     }
@@ -107,8 +99,8 @@ trait AESKW
     {
         $A = self::getInitialValue($key, $padding_enabled);
         self::checkKeySize($key, $padding_enabled);
-        $P = str_split($key, 8);
-        $N = count($P);
+        $P = \str_split($key, 8);
+        $N = \count($P);
         $C = [];
 
         if (1 === $N) {
@@ -125,10 +117,10 @@ trait AESKW
                     $R[$i - 1] = self::getLSB($B);
                 }
             }
-            $C = array_merge([$A], $R);
+            $C = \array_merge([$A], $R);
         }
 
-        return implode('', $C);
+        return \implode('', $C);
     }
 
     /**
@@ -140,13 +132,14 @@ trait AESKW
      */
     public static function unwrap(string $kek, string $key, bool $padding_enabled = false): string
     {
-        $P = str_split($key, 8);
+        $P = \str_split($key, 8);
         $A = $P[0];
-        $N = count($P);
+        $N = \count($P);
 
         if (2 > $N) {
             throw new \InvalidArgumentException('Bad data');
-        } elseif (2 === $N) {
+        }
+        if (2 === $N) {
             $B = self::decrypt($kek, $P[0].$P[1]);
             $unwrapped = self::getLSB($B);
             $A = self::getMSB($B);
@@ -162,7 +155,7 @@ trait AESKW
             }
             unset($R[0]);
 
-            $unwrapped = implode('', $R);
+            $unwrapped = \implode('', $R);
         }
         if (false === self::checkInitialValue($unwrapped, $padding_enabled, $A)) {
             throw new \InvalidArgumentException('Integrity check failed!');
@@ -171,35 +164,19 @@ trait AESKW
         return $unwrapped;
     }
 
-    /**
-     * @param int $bits
-     * @param int $value
-     *
-     * @return string
-     */
     private static function toXBits(int $bits, int $value): string
     {
-        return hex2bin(str_pad(dechex($value), $bits / 4, '0', STR_PAD_LEFT));
+        return \hex2bin(\str_pad(\dechex($value), $bits / 4, '0', STR_PAD_LEFT));
     }
 
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
     private static function getMSB(string $value): string
     {
-        return mb_substr($value, 0, mb_strlen($value, '8bit') / 2, '8bit');
+        return \mb_substr($value, 0, \mb_strlen($value, '8bit') / 2, '8bit');
     }
 
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
     private static function getLSB(string $value): string
     {
-        return mb_substr($value, mb_strlen($value, '8bit') / 2, null, '8bit');
+        return \mb_substr($value, \mb_strlen($value, '8bit') / 2, null, '8bit');
     }
 
     /**
@@ -207,7 +184,7 @@ trait AESKW
      */
     private static function encrypt(string $kek, string $data): string
     {
-        return openssl_encrypt($data, self::getMethod($kek), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+        return \openssl_encrypt($data, self::getMethod($kek), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
     }
 
     /**
@@ -215,6 +192,6 @@ trait AESKW
      */
     private static function decrypt(string $kek, string $data): string
     {
-        return openssl_decrypt($data, self::getMethod($kek), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+        return \openssl_decrypt($data, self::getMethod($kek), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
     }
 }
