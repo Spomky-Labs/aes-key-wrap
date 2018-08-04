@@ -17,9 +17,6 @@ final class A256KW
 {
     use AESKW;
 
-    /**
-     * {@inheritdoc}
-     */
     protected static function getMethod(): string
     {
         return 'aes-256-ecb';

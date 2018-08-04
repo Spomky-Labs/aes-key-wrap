@@ -179,17 +179,11 @@ trait AESKW
         return \mb_substr($value, \mb_strlen($value, '8bit') / 2, null, '8bit');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     private static function encrypt(string $kek, string $data): string
     {
         return \openssl_encrypt($data, self::getMethod($kek), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     private static function decrypt(string $kek, string $data): string
     {
         return \openssl_decrypt($data, self::getMethod($kek), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);

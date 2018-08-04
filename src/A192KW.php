@@ -17,9 +17,6 @@ final class A192KW
 {
     use AESKW;
 
-    /**
-     * {@inheritdoc}
-     */
     protected static function getMethod(): string
     {
         return 'aes-192-ecb';
