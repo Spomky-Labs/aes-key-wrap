@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2018 Spomky-Labs
+ * Copyright (c) 2014-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -22,13 +22,15 @@ use PHPUnit\Framework\TestCase;
  * These tests come from the RFC3394.
  *
  * @see https://www.ietf.org/rfc/rfc3394.txt#4
+ *
+ * @internal
  */
 final class One64BitBlockTest extends TestCase
 {
     /**
      * @test
      */
-    public function wrap64BitsKeyDataWith128BitKEK()
+    public function wrap64BitsKeyDataWith128BitKEK(): void
     {
         $kek = hex2bin('000102030405060708090A0B0C0D0E0F');
         $data = hex2bin('0011223344556677');
@@ -42,7 +44,7 @@ final class One64BitBlockTest extends TestCase
     /**
      * @test
      */
-    public function wrap64BitsKeyDataWith192BitKEK()
+    public function wrap64BitsKeyDataWith192BitKEK(): void
     {
         $kek = hex2bin('000102030405060708090A0B0C0D0E0F1011121314151617');
         $data = hex2bin('0011223344556677');
@@ -56,7 +58,7 @@ final class One64BitBlockTest extends TestCase
     /**
      * @test
      */
-    public function wrap64BitsKeyDataWith256BitKEK()
+    public function wrap64BitsKeyDataWith256BitKEK(): void
     {
         $kek = hex2bin('000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F');
         $data = hex2bin('0011223344556677');

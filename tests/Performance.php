@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2018 Spomky-Labs
+ * Copyright (c) 2014-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -16,6 +16,8 @@ namespace AESKW\Tests;
 use AESKW\A128KW;
 use AESKW\A192KW;
 use AESKW\A256KW;
+use function call_user_func_array;
+use InvalidArgumentException;
 
 /**
  * This class is used to check the performance of the library on the current platform.
@@ -26,10 +28,10 @@ use AESKW\A256KW;
  */
 final class Performance
 {
-    public static function run(int $nb = 1000)
+    public static function run(int $nb = 1000): void
     {
         if (1 > $nb) {
-            throw new \InvalidArgumentException('You must perform at least 1 test.');
+            throw new InvalidArgumentException('You must perform at least 1 test.');
         }
         $cases = self::getData();
         foreach ($cases as $case) {
@@ -38,7 +40,7 @@ final class Performance
         }
     }
 
-    private static function wrap(int $nb, array $case)
+    private static function wrap(int $nb, array $case): void
     {
         $class = $case['class'];
         $kek = $case['kek'];
@@ -49,7 +51,7 @@ final class Performance
         printf('%s: %f milliseconds/wrap'.PHP_EOL, $case['name'], $time);
     }
 
-    private static function unwrap(int $nb, array $case)
+    private static function unwrap(int $nb, array $case): void
     {
         $class = $case['class'];
         $kek = $case['kek'];
@@ -67,7 +69,7 @@ final class Performance
     {
         $time_start = microtime(true);
         for ($i = 0; $i < $nb; ++$i) {
-            \call_user_func_array([$class, $method], $args);
+            call_user_func_array([$class, $method], $args);
         }
         $time_end = microtime(true);
 

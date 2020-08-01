@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2018 Spomky-Labs
+ * Copyright (c) 2014-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -20,13 +20,15 @@ use PHPUnit\Framework\TestCase;
  * These tests come from the RFCRFC5649Test.
  *
  * @see https://tools.ietf.org/html/rfc5649#section-6
+ *
+ * @internal
  */
 final class RFC5649Test extends TestCase
 {
     /**
      * @test
      */
-    public function wrap20BytesKeyDataWith192BitKEK()
+    public function wrap20BytesKeyDataWith192BitKEK(): void
     {
         $kek = hex2bin('5840df6e29b02af1ab493b705bf16ea1ae8338f4dcc176a8');
         $key = hex2bin('c37b7e6492584340bed12207808941155068f738');
@@ -40,7 +42,7 @@ final class RFC5649Test extends TestCase
     /**
      * @test
      */
-    public function wrap7BytesKeyDataWith192BitKEK()
+    public function wrap7BytesKeyDataWith192BitKEK(): void
     {
         $kek = hex2bin('5840df6e29b02af1ab493b705bf16ea1ae8338f4dcc176a8');
         $key = hex2bin('466f7250617369');

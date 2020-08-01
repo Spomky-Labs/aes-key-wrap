@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2018 Spomky-Labs
+ * Copyright (c) 2014-2020 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -20,13 +20,15 @@ use PHPUnit\Framework\TestCase;
  * This test comes from the JWE specification.
  *
  * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.3.3
+ *
+ * @internal
  */
 final class JWETest extends TestCase
 {
     /**
      * @test
      */
-    public function cEKEncryption()
+    public function cEKEncryption(): void
     {
         // The KEK
         $kek = base64_decode('GawgguFyGrWKav7AX4VKUg', true);
