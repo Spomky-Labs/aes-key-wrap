@@ -11,7 +11,7 @@ PHP AES Key Wrap
 [![Latest Stable Version](https://poser.pugx.org/spomky-labs/aes-key-wrap/v/stable.png)](https://packagist.org/packages/spomky-labs/aes-key-wrap)
 [![Latest Unstable Version](https://poser.pugx.org/spomky-labs/aes-key-wrap/v/unstable.png)](https://packagist.org/packages/spomky-labs/aes-key-wrap)
 [![Total Downloads](https://poser.pugx.org/spomky-labs/aes-key-wrap/downloads.png)](https://packagist.org/packages/spomky-labs/aes-key-wrap)
-[![License](https://poser.pugx.org/spomky-labs/aes-key-wrap/license.png)](https://packagist.org/packages/spomky-labs/aes-key-wrap)
+[![License](https://poser.pugx.org/spomky-labs/aes-key-wrap/license.png)](https://packagist.org/packages/spomky-labs/aes-key-wrap) [![GuardRails badge](https://badges.production.guardrails.io/Spomky-Labs/aes-key-wrap.svg)](https://www.guardrails.io)
 
 
 This library provides an implementation of the [RFC 3394 (Advanced Encryption Standard (AES) Key Wrap Algorithm)](https://tools.ietf.org/html/rfc3394) and the [RFC 5649 (Advanced Encryption Standard (AES) Key Wrap with Padding Algorithm)](https://tools.ietf.org/html/rfc5649).
