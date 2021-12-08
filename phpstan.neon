@@ -1,12 +1,11 @@
 parameters:
-    level: 7
+    level: max
     paths:
         - src
+    ignoreErrors:
+        -
+            message: '#Comparison operation .* between .* and 1 is always true\.#'
+            count: 3
+            path: src/AESKW.php
 includes:
-    - vendor/phpstan/phpstan-strict-rules/rules.neon
-    - vendor/phpstan/phpstan-phpunit/extension.neon
-    - vendor/phpstan/phpstan-phpunit/rules.neon
-    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
-    - vendor/phpstan/phpstan-beberlei-assert/extension.neon
     - vendor/phpstan/phpstan/conf/bleedingEdge.neon
-    - vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon

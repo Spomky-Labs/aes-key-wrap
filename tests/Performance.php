@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2020 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace AESKW\Tests;
 
 use AESKW\A128KW;
@@ -18,19 +9,18 @@ use AESKW\A192KW;
 use AESKW\A256KW;
 use function call_user_func_array;
 use InvalidArgumentException;
+use const PHP_EOL;
 
 /**
- * This class is used to check the performance of the library on the current platform.
- * You just have to call Performance::run();
- * By default, tests are performed 1000 times.
- * You can modify it by passing a positive integer  as first argument:
- * Performance::run(10000);.
+ * This class is used to check the performance of the library on the current platform. You just have to call
+ * Performance::run(); By default, tests are performed 1000 times. You can modify it by passing a positive integer  as
+ * first argument: Performance::run(10000);.
  */
 final class Performance
 {
     public static function run(int $nb = 1000): void
     {
-        if (1 > $nb) {
+        if ($nb < 1) {
             throw new InvalidArgumentException('You must perform at least 1 test.');
         }
         $cases = self::getData();
@@ -48,7 +38,7 @@ final class Performance
         $padding = $case['padding'];
         $time = self::do($class, 'wrap', $nb, $kek, $data, $padding);
 
-        printf('%s: %f milliseconds/wrap'.PHP_EOL, $case['name'], $time);
+        printf('%s: %f milliseconds/wrap' . PHP_EOL, $case['name'], $time);
     }
 
     private static function unwrap(int $nb, array $case): void
@@ -59,7 +49,7 @@ final class Performance
         $padding = $case['padding'];
         $time = self::do($class, 'unwrap', $nb, $kek, $result, $padding);
 
-        printf('%s: %f milliseconds/unwrap'.PHP_EOL, $case['name'], $time);
+        printf('%s: %f milliseconds/unwrap' . PHP_EOL, $case['name'], $time);
     }
 
     /**
