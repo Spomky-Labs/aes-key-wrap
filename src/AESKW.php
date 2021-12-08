@@ -2,23 +2,18 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2020 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace AESKW;
 
 use function count;
+use function hex2bin;
 use InvalidArgumentException;
-use function Safe\hex2bin;
-use function Safe\mb_str_split;
-use function Safe\openssl_decrypt;
-use function Safe\openssl_encrypt;
+use function mb_str_split;
+use function openssl_decrypt;
+use function openssl_encrypt;
+use const OPENSSL_RAW_DATA;
+use const OPENSSL_ZERO_PADDING;
+use const STR_PAD_LEFT;
+use const STR_PAD_RIGHT;
 
 trait AESKW
 {
@@ -37,15 +32,15 @@ trait AESKW
         $N = count($P);
         $C = [];
 
-        if (1 === $N) {
-            $B = self::encrypt($kek, $A.$P[0]);
+        if ($N === 1) {
+            $B = self::encrypt($kek, $A . $P[0]);
             $C[0] = self::getMSB($B);
             $C[1] = self::getLSB($B);
-        } elseif (1 < $N) {
+        } elseif ($N > 1) {
             $R = $P;
             for ($j = 0; $j <= 5; ++$j) {
                 for ($i = 1; $i <= $N; ++$i) {
-                    $B = self::encrypt($kek, $A.$R[$i - 1]);
+                    $B = self::encrypt($kek, $A . $R[$i - 1]);
                     $t = $i + $j * $N;
                     $A = self::toXBits(64, $t) ^ self::getMSB($B);
                     $R[$i - 1] = self::getLSB($B);
@@ -70,11 +65,11 @@ trait AESKW
         $A = $P[0];
         $N = count($P);
 
-        if (2 > $N) {
+        if ($N < 2) {
             throw new InvalidArgumentException('Bad data');
         }
-        if (2 === $N) {
-            $B = self::decrypt($kek, $P[0].$P[1]);
+        if ($N === 2) {
+            $B = self::decrypt($kek, $P[0] . $P[1]);
             $unwrapped = self::getLSB($B);
             $A = self::getMSB($B);
         } else {
@@ -82,7 +77,7 @@ trait AESKW
             for ($j = 5; $j >= 0; --$j) {
                 for ($i = $N - 1; $i >= 1; --$i) {
                     $t = $i + $j * ($N - 1);
-                    $B = self::decrypt($kek, (self::toXBits(64, $t) ^ $A).$R[$i]);
+                    $B = self::decrypt($kek, (self::toXBits(64, $t) ^ $A) . $R[$i]);
                     $A = self::getMSB($B);
                     $R[$i] = self::getLSB($B);
                 }
@@ -91,7 +86,7 @@ trait AESKW
 
             $unwrapped = implode('', $R);
         }
-        if (false === self::checkInitialValue($unwrapped, $padding_enabled, $A)) {
+        if (self::checkInitialValue($unwrapped, $padding_enabled, $A) === false) {
             throw new InvalidArgumentException('Integrity check failed!');
         }
 
@@ -99,9 +94,9 @@ trait AESKW
     }
 
     /**
-     * The initial value used to wrap the key and check the integrity when unwrapped.
-     * The RFC3394 set this value to 0xA6A6A6A6A6A6A6A6
-     * The RFC5649 set this value to 0xA65959A6XXXXXXXX (The part with XXXXXXXX is the MLI, depends on the padding).
+     * The initial value used to wrap the key and check the integrity when unwrapped. The RFC3394 set this value to
+     * 0xA6A6A6A6A6A6A6A6 The RFC5649 set this value to 0xA65959A6XXXXXXXX (The part with XXXXXXXX is the MLI, depends
+     * on the padding).
      *
      * @param string $key             The key
      * @param bool   $padding_enabled Enable padding (RFC5649)
@@ -110,12 +105,17 @@ trait AESKW
      */
     private static function getInitialValue(string &$key, bool $padding_enabled): string
     {
-        if (false === $padding_enabled) {
-            return hex2bin('A6A6A6A6A6A6A6A6');
+        if ($padding_enabled === false) {
+            $bin = hex2bin('A6A6A6A6A6A6A6A6');
+            if ($bin === false) {
+                throw new InvalidArgumentException('Unable to convert the data');
+            }
+
+            return $bin;
         }
 
         $MLI = mb_strlen($key, '8bit');
-        $iv = hex2bin('A65959A6').self::toXBits(32, $MLI);
+        $iv = hex2bin('A65959A6') . self::toXBits(32, $MLI);
 
         $n = (int) ceil($MLI / 8);
         $key = str_pad($key, 8 * $n, "\0", STR_PAD_RIGHT);
@@ -131,7 +131,7 @@ trait AESKW
         }
 
         // The RFC3394 is required but the previous check is not satisfied => invalid
-        if (false === $padding_enabled) {
+        if ($padding_enabled === false) {
             return false;
         }
 
@@ -143,13 +143,13 @@ trait AESKW
         $n = mb_strlen($key, '8bit') / 8;
         $MLI = (int) hexdec(bin2hex(ltrim(self::getLSB($iv), "\0")));
 
-        if (!(8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
+        if (! (8 * ($n - 1) < $MLI && $MLI <= 8 * $n)) {
             return false;
         }
 
         $b = 8 * $n - $MLI;
         for ($i = 0; $i < $b; ++$i) {
-            if ("\0" !== mb_substr($key, $MLI + $i, 1, '8bit')) {
+            if (mb_substr($key, $MLI + $i, 1, '8bit') !== "\0") {
                 return false;
             }
         }
@@ -160,17 +160,22 @@ trait AESKW
 
     private static function checkKeySize(string $key, bool $padding_enabled): void
     {
-        if ('' === $key) {
+        if ($key === '') {
             throw new InvalidArgumentException('Bad key size');
         }
-        if (false === $padding_enabled && 0 !== mb_strlen($key, '8bit') % 8) {
+        if ($padding_enabled === false && mb_strlen($key, '8bit') % 8 !== 0) {
             throw new InvalidArgumentException('Bad key size');
         }
     }
 
     private static function toXBits(int $bits, int $value): string
     {
-        return hex2bin(str_pad(dechex($value), $bits / 4, '0', STR_PAD_LEFT));
+        $bin = hex2bin(str_pad(dechex($value), $bits / 4, '0', STR_PAD_LEFT));
+        if ($bin === false) {
+            throw new InvalidArgumentException('Unable to convert the data');
+        }
+
+        return $bin;
     }
 
     private static function getMSB(string $value): string
@@ -185,11 +190,21 @@ trait AESKW
 
     private static function encrypt(string $kek, string $data): string
     {
-        return openssl_encrypt($data, self::getMethod(), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+        $result = openssl_encrypt($data, self::getMethod(), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+        if ($result === false) {
+            throw new InvalidArgumentException('Unable to encrypt the data');
+        }
+
+        return $result;
     }
 
     private static function decrypt(string $kek, string $data): string
     {
-        return openssl_decrypt($data, self::getMethod(), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+        $result = openssl_decrypt($data, self::getMethod(), $kek, OPENSSL_ZERO_PADDING | OPENSSL_RAW_DATA);
+        if ($result === false) {
+            throw new InvalidArgumentException('Unable to decrypt the data');
+        }
+
+        return $result;
     }
 }

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2020 Spomky-Labs
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- */
-
 namespace AESKW\Tests;
 
 use AESKW\A192KW;
@@ -34,9 +25,9 @@ final class RFC5649Test extends TestCase
         $key = hex2bin('c37b7e6492584340bed12207808941155068f738');
 
         $wrapped = A192KW::wrap($kek, $key, true);
-        static::assertEquals(hex2bin('138bdeaa9b8fa7fc61f97742e72248ee5ae6ae5360d1ae6a5f54f373fa543b6a'), $wrapped);
+        static::assertSame(hex2bin('138bdeaa9b8fa7fc61f97742e72248ee5ae6ae5360d1ae6a5f54f373fa543b6a'), $wrapped);
         $unwrapped = A192KW::unwrap($kek, $wrapped, true);
-        static::assertEquals($key, $unwrapped);
+        static::assertSame($key, $unwrapped);
     }
 
     /**
@@ -48,8 +39,8 @@ final class RFC5649Test extends TestCase
         $key = hex2bin('466f7250617369');
 
         $wrapped = A192KW::wrap($kek, $key, true);
-        static::assertEquals(hex2bin('afbeb0f07dfbf5419200f2ccb50bb24f'), $wrapped);
+        static::assertSame(hex2bin('afbeb0f07dfbf5419200f2ccb50bb24f'), $wrapped);
         $unwrapped = A192KW::unwrap($kek, $wrapped, true);
-        static::assertEquals($key, $unwrapped);
+        static::assertSame($key, $unwrapped);
     }
 }
