@@ -1,5 +1,5 @@
 Contributing
-=============================
+============
 
 First of all, **thank you** for contributing.
 
